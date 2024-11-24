@@ -84,3 +84,26 @@ func check_level_complete():
 	# Check against your win condition
 	if grown_plants >= 5:  # Example win condition
 		print("Level Complete!")
+
+func plant_seed(plant_type: String):
+	var plant_scene
+	if plant_type == "Carrot":
+		plant_scene = preload("res://plants/Carrot.tscn")
+	elif plant_type == "Tomato":
+		plant_scene = preload("res://plants/Tomato.tscn")
+	elif plant_type == "Lettuce":
+		plant_scene = preload("res://plants/Lettuce.tscn")
+	else:
+		print("Unknown plant type")
+		return
+
+	var plant = plant_scene.instantiate()  # Create an instance of the plant
+	var current_plot = get_plot_under_player()  # Get the plot under the player
+	if current_plot and not current_plot.has_plant():
+		current_plot.set_plant(plant)  # Set the plant in the plot
+		add_child(plant)  # Add the plant to the scene
+		plant.position = current_plot.position  # Position the plant in the plot
+		print("Planted a ", plant_type)
+
+func get_plot_under_player():
+	return 
