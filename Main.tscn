@@ -8,3 +8,10 @@ script = ExtResource("1_dilqc")
 [node name="GridContainer" type="GridContainer" parent="."]
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="TurnButton" type="Button" parent="."]
+offset_right = 8.0
+offset_bottom = 8.0
+text = "Next Turn"
+
+[connection signal="pressed" from="TurnButton" to="." method="_on_turn_button_pressed"]

@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://dtyd45nfe7ot4"]
+[gd_scene load_steps=3 format=3 uid="uid://dtyd45nfe7ot4"]
 
+[ext_resource type="Script" path="res://Plot.gd" id="1_0m6rt"]
 [ext_resource type="Texture2D" uid="uid://flv1k3ds3rg6" path="res://Sprites/Plot-Alpha-Testing.svg" id="1_i3w6v"]
 
 [node name="Node2D" type="Node2D"]
+script = ExtResource("1_0m6rt")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_i3w6v")
