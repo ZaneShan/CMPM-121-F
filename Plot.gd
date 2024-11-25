@@ -8,7 +8,6 @@ extends Node2D
 var plant = null  # Optional plant object (set externally)
 var coordinates = Vector2()
 
-
 # Returns true if there is a plant in the plot
 func has_plant() -> bool:
 	return plant != null
