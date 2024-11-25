@@ -6,12 +6,16 @@ var plots = []
 var sun_level_range = Vector2(5, 10)  # Random sun level range for each turn
 var water_change_range = Vector2(-2, 2)  # Random water change range for each turn
 
+const Plot = preload("res://Plot.gd")  # Load the Plot script
 
 func _ready():
-	create_grid()
+	# Use the static method from Plot to create the grid
+	var cell_size = 64
+	plots = Plot.create_grid(grid_size, cell_size, self)
+
+	# Connect the turn button
 	var button = $TurnButton
 	button.connect("pressed", Callable(self, "_on_turn_complete"))
-
 
 	# Add the player
 	var player = preload("res://Player.tscn").instantiate()
@@ -20,29 +24,6 @@ func _ready():
 	# Set the player's starting position to the top-left corner of the plots
 	if grid_size > 0:
 		player.position = plots[0][0].position  # Position matches the top-left plot
-
-# Create grid matrix
-func create_grid():
-	var plot_scene = preload("res://Plot.tscn")
-	var cell_size = 64  # Adjust to match the size of your plot sprites
-	var grid_width = grid_size * cell_size
-	var grid_height = grid_size * cell_size
-
-	# Get the size of the viewport
-	var viewport_size = get_viewport_rect().size
-
-	# Calculate the top-left position to center the grid
-	var start_x = (viewport_size.x - grid_width) / 2
-	var start_y = (viewport_size.y - grid_height) / 2
-
-	for x in range(grid_size):
-		var row = []
-		for y in range(grid_size):
-			var plot = plot_scene.instantiate()
-			add_child(plot)
-			plot.position = Vector2(start_x + x * cell_size, start_y + y * cell_size)
-			row.append(plot)
-		plots.append(row)
 
 # Turn update button callback
 # Turn update button callback
@@ -84,3 +65,26 @@ func check_level_complete():
 	# Check against your win condition
 	if grown_plants >= 5:  # Example win condition
 		print("Level Complete!")
+
+func plant_seed(plant_type: String):
+	var plant_scene
+	if plant_type == "Carrot":
+		plant_scene = preload("res://plants/Carrot.tscn")
+	elif plant_type == "Tomato":
+		plant_scene = preload("res://plants/Tomato.tscn")
+	elif plant_type == "Lettuce":
+		plant_scene = preload("res://plants/Lettuce.tscn")
+	else:
+		print("Unknown plant type")
+		return
+
+	var plant = plant_scene.instantiate()  # Create an instance of the plant
+	var current_plot = get_plot_under_player()  # Get the plot under the player
+	if current_plot and not current_plot.has_plant():
+		current_plot.set_plant(plant)  # Set the plant in the plot
+		add_child(plant)  # Add the plant to the scene
+		plant.position = current_plot.position  # Position the plant in the plot
+		print("Planted a ", plant_type)
+
+func get_plot_under_player():
+	return 

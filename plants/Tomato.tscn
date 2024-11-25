@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://ca0cl47sy6xs7"]
+
+[ext_resource type="Texture2D" uid="uid://71oy4vhfxaj7" path="res://Sprites/Tomato-Alpha-Testing.svg" id="1_7gfyl"]
+
+[node name="Tomato" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_7gfyl")

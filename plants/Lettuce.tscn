@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://dcuf834o7wxh3"]
+
+[ext_resource type="Texture2D" uid="uid://b315b8nltc6ku" path="res://Sprites/Lettuce-Alpha-Testing.svg" id="1_untqw"]
+
+[node name="Lettuce" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_untqw")
