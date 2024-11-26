@@ -2,7 +2,7 @@ extends Node2D
 
 	
 var grid_size = 3
-var plots = []
+var plotsArray = []
 var sun_level_range = Vector2(5, 10)  # Random sun level range for each turn
 var water_change_range = Vector2(-2, 2)  # Random water change range for each turn
 
@@ -11,7 +11,7 @@ const Plot = preload("res://Plot.gd")  # Load the Plot script
 func _ready():
 	# Use the static method from Plot to create the grid
 	var cell_size = 64
-	plots = Plot.create_grid(grid_size, cell_size, self)
+	plotsArray = Plot.create_grid(grid_size, cell_size, self)
 
 	# Connect the turn button
 	var button = $TurnButton
@@ -19,16 +19,18 @@ func _ready():
 
 	# Add the player
 	var player = preload("res://Player.tscn").instantiate()
+	player.plots = plotsArray
+	player.grid_size = grid_size
 	add_child(player)
 
 	# Set the player's starting position to the top-left corner of the plots
 	if grid_size > 0:
-		player.position = plots[0][0].position  # Position matches the top-left plot
+		player.position = plotsArray[0][0].position  # Position matches the top-left plot
 
 # Turn update button callback
 # Turn update button callback
 func _on_turn_complete():
-	for row in plots:
+	for row in plotsArray:
 		for plot in row:
 			update_plot(plot)
 	check_level_complete()
@@ -57,7 +59,7 @@ func update_plant(plant, plot):
 # Check if level is complete
 func check_level_complete():
 	var grown_plants = 0
-	for row in plots:
+	for row in plotsArray:
 		for plot in row:
 			if plot.has_plant() and plot.get_plant().is_fully_grown():
 				grown_plants += 1
