@@ -1,8 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://dcuf834o7wxh3"]
+[gd_scene load_steps=4 format=3 uid="uid://dcuf834o7wxh3"]
 
-[ext_resource type="Texture2D" uid="uid://b315b8nltc6ku" path="res://Sprites/Lettuce-Alpha-Testing.svg" id="1_untqw"]
+[ext_resource type="Texture2D" uid="uid://df02qqxf5badp" path="res://Sprites/Lettuce1-Alpha-Testing.svg" id="1_mg2vm"]
+[ext_resource type="Texture2D" uid="uid://d4eap0q0a3l5r" path="res://Sprites/Lettuce2-Alpha-Testing.svg" id="2_ehr8n"]
+[ext_resource type="Texture2D" uid="uid://b5ald6v5j65m1" path="res://Sprites/Lettuce3-Alpha-Testing.svg" id="3_3e5oa"]
 
 [node name="Lettuce" type="Node2D"]
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_untqw")
+[node name="plant_stage_1" type="Sprite2D" parent="."]
+texture = ExtResource("1_mg2vm")
+
+[node name="plant_stage_2" type="Sprite2D" parent="."]
+texture = ExtResource("2_ehr8n")
+
+[node name="plant_stage_3" type="Sprite2D" parent="."]
+texture = ExtResource("3_3e5oa")

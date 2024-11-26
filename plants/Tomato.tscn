@@ -1,8 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://ca0cl47sy6xs7"]
+[gd_scene load_steps=4 format=3 uid="uid://ca0cl47sy6xs7"]
 
-[ext_resource type="Texture2D" uid="uid://71oy4vhfxaj7" path="res://Sprites/Tomato-Alpha-Testing.svg" id="1_7gfyl"]
+[ext_resource type="Texture2D" uid="uid://eqdl1k7dmne3" path="res://Sprites/Tomato1-Alpha-Testing.svg" id="1_bu4v2"]
+[ext_resource type="Texture2D" uid="uid://dv5jrmde4njar" path="res://Sprites/Tomato2-Alpha-Testing.svg" id="2_lkj26"]
+[ext_resource type="Texture2D" uid="uid://b5d0njt168bqa" path="res://Sprites/Tomato3-Alpha-Testing.svg" id="3_axi2w"]
 
 [node name="Tomato" type="Node2D"]
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_7gfyl")
+[node name="plant_stage_1" type="Sprite2D" parent="."]
+texture = ExtResource("1_bu4v2")
+
+[node name="plant_stage_2" type="Sprite2D" parent="."]
+texture = ExtResource("2_lkj26")
+
+[node name="plant_stage_3" type="Sprite2D" parent="."]
+texture = ExtResource("3_axi2w")

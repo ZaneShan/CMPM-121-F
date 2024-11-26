@@ -1,4 +1,4 @@
-extends "res://Plant.gd"
+extends "res://plants/Plant.gd"
 
 func _ready():
 	sun_req = 4.0  # Lettuce sun requirement
