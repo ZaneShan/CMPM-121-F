@@ -1,4 +1,5 @@
 extends Area2D
+const Plant = preload("res://plants/Plant.gd")
 
 @export var grid_size: int = 5  # Default size of the grid (number of cells per row/column)
 @export var cell_size: int = 64  # Size of each grid cell
@@ -29,6 +30,9 @@ func _input(event):
 		move(Vector2(-1, 0))
 	elif event.is_action_pressed("ui_right"):
 		move(Vector2(1, 0))
+	elif event.is_action_pressed("ui_accept"):
+		var plant = Plant.new(get_coords)
+		plant.seed_plant()
 
 func move(direction: Vector2):
 	# Calculate new grid coordinates
@@ -47,3 +51,6 @@ func move(direction: Vector2):
 
 		# Update the target position based on the new plot's position
 		target_position = new_plot.position
+		
+func get_coords():
+	return current_coordinates

@@ -7,6 +7,8 @@ var sun_level_range = Vector2(5, 10)  # Random sun level range for each turn
 var water_change_range = Vector2(-2, 2)  # Random water change range for each turn
 
 const Plot = preload("res://Plot.gd")  # Load the Plot script
+const Plant = preload("res://plants/Plant.gd")
+var player = null
 
 func _ready():
 	# Use the static method from Plot to create the grid
@@ -18,7 +20,7 @@ func _ready():
 	button.connect("pressed", Callable(self, "_on_turn_complete"))
 
 	# Add the player
-	var player = preload("res://Player.tscn").instantiate()
+	player = preload("res://Player.tscn").instantiate()
 	player.plots = plotsArray
 	player.grid_size = grid_size
 	add_child(player)
@@ -48,13 +50,10 @@ func update_plot(plot):
 	# Update the plant in the plot, if any
 	if plot.has_plant():
 		var plant = plot.get_plant()
-		update_plant(plant, plot)
+		plant.grow()
 
 # Update plant logic
-func update_plant(plant, plot):
-	# Check if plant meets growth requirements
-	if plot.sun_level >= plant.sun_requirement and plot.water_level >= plant.water_requirement:
-		plant.grow()
+
 
 # Check if level is complete
 func check_level_complete():
@@ -80,13 +79,11 @@ func plant_seed(plant_type: String):
 		print("Unknown plant type")
 		return
 
-	var plant = plant_scene.instantiate()  # Create an instance of the plant
-	var current_plot = get_plot_under_player()  # Get the plot under the player
+	# Create an instance of the plant
+	var current_plot = player.get_coords()
+	var plant = Plant.new(current_plot)
 	if current_plot and not current_plot.has_plant():
 		current_plot.set_plant(plant)  # Set the plant in the plot
 		add_child(plant)  # Add the plant to the scene
 		plant.position = current_plot.position  # Position the plant in the plot
 		print("Planted a ", plant_type)
-
-func get_plot_under_player():
-	return 
