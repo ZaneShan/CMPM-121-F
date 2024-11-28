@@ -10,6 +10,10 @@ func _ready():
 	var cell_size = 64
 	plotsArray = plot_scene.create_grid(grid_size, cell_size, self)
 	
+	var level_complete_label = $LevelCompleteLabel
+	level_complete_label.visible = false
+	var viewport_size = get_viewport_rect().size
+	level_complete_label.position = plotsArray[0][0].global_position#Vector2(viewport_size.x/2, viewport_size.y/2)
 	# Assign the plotsArray to each plot
 	for row in plotsArray:
 		for plot in row:
@@ -51,3 +55,5 @@ func check_level_complete():
 	# Check against your win condition
 	if grown_plants >= 5:  # Example win condition
 		print("Level Complete!")
+		var level_complete_label = $LevelCompleteLabel
+		level_complete_label.visible = true
