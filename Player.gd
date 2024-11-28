@@ -51,9 +51,9 @@ func move(direction: Vector2):
 		current_plot.remove_player()
 
 		current_coordinates = new_coordinates
-		var new_plot = plots[current_coordinates.x][current_coordinates.y]
-		new_plot.set_player(self)
-		target_position = new_plot.position
+		current_plot = plots[current_coordinates.x][current_coordinates.y]
+		current_plot.set_player(self)
+		target_position = current_plot.position
 
 # New method to plant a seed on the current plot
 

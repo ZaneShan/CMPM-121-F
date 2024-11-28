@@ -10,10 +10,13 @@ sun_req = 3.0
 water_req = 7.0
 
 [node name="plant_stage_1" parent="." index="0"]
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("1_bu4v2")
 
 [node name="plant_stage_2" parent="." index="1"]
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_lkj26")
 
 [node name="plant_stage_3" parent="." index="2"]
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_axi2w")
