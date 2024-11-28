@@ -76,7 +76,36 @@ static func create_grid(grid_size: int, cell_size: int, parent: Node2D) -> Array
 			parent.add_child(plot)  # Add plot to the provided parent node
 			plot.position = Vector2(start_x + x * cell_size, start_y + y * cell_size)
 			plot.coordinates = Vector2(x, y)
-			print("Plot coordinates: ", plot.coordinates, " | Position: ", plot.position)
 			row.append(plot)
 		plots.append(row)
 	return plots
+	
+var plots_array = []  # Reference to the parent grid of plots
+
+# Set the plots array explicitly when creating the grid
+func set_plots_array(new_plots_array):
+	plots_array = new_plots_array
+
+func get_adjacent_plots() -> Array:
+	var adjacent_plots = []
+	var current_x = coordinates.x
+	var current_y = coordinates.y
+	
+	# Ensure the grid is set and access it directly
+	if plots_array.size() == 0:
+		return adjacent_plots  # Early exit if grid is not set properly
+
+	var grid_size_x = plots_array.size()  # Number of rows
+	var grid_size_y = plots_array[0].size()  # Number of columns (assuming all rows have same number of columns)
+	
+	# Ensure coordinates are within bounds of the grid
+	if current_x > 0:
+		adjacent_plots.append(plots_array[current_x - 1][current_y])  # Left
+	if current_x < grid_size_x - 1:
+		adjacent_plots.append(plots_array[current_x + 1][current_y])  # Right
+	if current_y > 0:
+		adjacent_plots.append(plots_array[current_x][current_y - 1])  # Up
+	if current_y < grid_size_y - 1:
+		adjacent_plots.append(plots_array[current_x][current_y + 1])  # Down
+	
+	return adjacent_plots

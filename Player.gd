@@ -59,25 +59,28 @@ func move(direction: Vector2):
 
 # CAN BE MOVED TO PLANT.GD but this works so i dont wanna do that rn
 func plant_seed_on_current_plot(plant_type: String):
-	var plant_scene = preload("res://plants/Plant.tscn")
-	var current_plant = plant_scene # Default value
-	var carrot_scene = preload("res://plants/Carrot.tscn")
-	var lettuce_scene = preload("res://plants/Lettuce.tscn")
-	var tomato_scene = preload("res://plants/Tomato.tscn")
+	var current_plant = null
 	if (plant_type == "Carrot"):
-		current_plant = carrot_scene
+		current_plant = preload("res://plants/Carrot.tscn")
 	elif (plant_type == "Lettuce"):
-		current_plant = lettuce_scene
+		current_plant = preload("res://plants/Lettuce.tscn")
 	elif (plant_type == "Tomato"):
-		current_plant = tomato_scene
+		current_plant = preload("res://plants/Tomato.tscn")
 	else:
-		current_plant = plant_scene
+		current_plant = preload("res://plants/Plant.tscn") # Default value
+		
 	var plant = current_plant.instantiate()
+	
+	plant.is_carrot = (plant_type == "Carrot")
+	plant.is_lettuce = (plant_type == "Lettuce")
+	plant.is_tomato = (plant_type == "Tomato")
+	
 	if current_plot and not current_plot.has_plant():
 		current_plot.set_plant(plant)
 		current_plot.add_child(plant)
 		print("current plot plant: ", current_plot.plant)
 		plant.global_position = current_plot.position
+		plant.current_plot = current_plot
 		
 func harvest_plant_on_current_plot():
 	if current_plot:

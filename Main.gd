@@ -9,6 +9,13 @@ func _ready():
 	# Use the static method from Plot to create the grid
 	var cell_size = 64
 	plotsArray = plot_scene.create_grid(grid_size, cell_size, self)
+	
+	# Assign the plotsArray to each plot
+	for row in plotsArray:
+		for plot in row:
+			plot.set_plots_array(plotsArray)  # Set the grid reference in each plot
+	
+	print(plotsArray[0][0].get_adjacent_plots())  # This will print the adjacent plots for the top-left plot
 
 	# Connect the turn button
 	var button = $TurnButton
