@@ -1,16 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://cxldfq72vt4ji"]
+[gd_scene load_steps=2 format=3 uid="uid://buh40h3ohfqvc"]
 
-[ext_resource type="Texture2D" uid="uid://bf3bd6r7yx7uf" path="res://Sprites/Carrot1-Alpha-Testing.svg" id="1_v7pos"]
-[ext_resource type="Texture2D" uid="uid://csuxl5efh7a3v" path="res://Sprites/Carrot2-Alpha-Testing.svg" id="2_qejr4"]
-[ext_resource type="Texture2D" uid="uid://cy3tg77w3trkj" path="res://Sprites/Carrot3-Alpha-Testing.svg" id="3_r7vow"]
+[ext_resource type="PackedScene" uid="uid://dnw6vlgcwk5dm" path="res://plants/Plant.tscn" id="1_wm1uy"]
 
-[node name="Carrot" type="Node2D"]
-
-[node name="plant_stage_1" type="Sprite2D" parent="."]
-texture = ExtResource("1_v7pos")
-
-[node name="plant_stage_2" type="Sprite2D" parent="."]
-texture = ExtResource("2_qejr4")
-
-[node name="plant_stage_3" type="Sprite2D" parent="."]
-texture = ExtResource("3_r7vow")
+[node name="Plant" instance=ExtResource("1_wm1uy")]
+sun_req = 7.0
+water_req = 3.0

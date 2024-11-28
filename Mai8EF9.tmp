@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://cs1kggc4d5bew"]
+
+[ext_resource type="Script" path="res://Main.gd" id="1_dilqc"]
+
+[node name="Grid" type="Node2D"]
+script = ExtResource("1_dilqc")
+
+[node name="TurnButton" type="Button" parent="."]
+offset_right = 8.0
+offset_bottom = 8.0
+text = "Next Turn"
+
+[connection signal="pressed" from="TurnButton" to="." method="_on_turn_button_pressed"]

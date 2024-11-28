@@ -1,16 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://ca0cl47sy6xs7"]
+[gd_scene load_steps=5 format=3 uid="uid://c3fx5n0spf40r"]
 
 [ext_resource type="Texture2D" uid="uid://eqdl1k7dmne3" path="res://Sprites/Tomato1-Alpha-Testing.svg" id="1_bu4v2"]
+[ext_resource type="PackedScene" uid="uid://dnw6vlgcwk5dm" path="res://plants/Plant.tscn" id="1_unjtv"]
 [ext_resource type="Texture2D" uid="uid://dv5jrmde4njar" path="res://Sprites/Tomato2-Alpha-Testing.svg" id="2_lkj26"]
 [ext_resource type="Texture2D" uid="uid://b5d0njt168bqa" path="res://Sprites/Tomato3-Alpha-Testing.svg" id="3_axi2w"]
 
-[node name="Tomato" type="Node2D"]
+[node name="Plant" instance=ExtResource("1_unjtv")]
+sun_req = 3.0
+water_req = 7.0
 
-[node name="plant_stage_1" type="Sprite2D" parent="."]
+[node name="plant_stage_1" parent="." index="0"]
 texture = ExtResource("1_bu4v2")
 
-[node name="plant_stage_2" type="Sprite2D" parent="."]
+[node name="plant_stage_2" parent="." index="1"]
 texture = ExtResource("2_lkj26")
 
-[node name="plant_stage_3" type="Sprite2D" parent="."]
+[node name="plant_stage_3" parent="." index="2"]
 texture = ExtResource("3_axi2w")

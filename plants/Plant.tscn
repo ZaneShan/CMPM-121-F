@@ -1,15 +1,20 @@
-[gd_scene load_steps=3 format=3 uid="uid://dnw6vlgcwk5dm"]
+[gd_scene load_steps=5 format=3 uid="uid://dnw6vlgcwk5dm"]
 
 [ext_resource type="Script" path="res://plants/Plant.gd" id="1_738ou"]
-[ext_resource type="Texture2D" uid="uid://b315b8nltc6ku" path="res://Sprites/Lettuce-Alpha-Testing.svg" id="2_tpjdl"]
+[ext_resource type="Texture2D" uid="uid://bf3bd6r7yx7uf" path="res://Sprites/Carrot1-Alpha-Testing.svg" id="2_pewmg"]
+[ext_resource type="Texture2D" uid="uid://csuxl5efh7a3v" path="res://Sprites/Carrot2-Alpha-Testing.svg" id="3_01kbr"]
+[ext_resource type="Texture2D" uid="uid://cy3tg77w3trkj" path="res://Sprites/Carrot3-Alpha-Testing.svg" id="4_1de5l"]
 
 [node name="Plant" type="Node2D"]
 script = ExtResource("1_738ou")
 
 [node name="plant_stage_1" type="Sprite2D" parent="."]
+texture = ExtResource("2_pewmg")
 
 [node name="plant_stage_2" type="Sprite2D" parent="."]
-texture = ExtResource("2_tpjdl")
+visible = false
+texture = ExtResource("3_01kbr")
 
 [node name="plant_stage_3" type="Sprite2D" parent="."]
-texture = ExtResource("2_tpjdl")
+visible = false
+texture = ExtResource("4_1de5l")
