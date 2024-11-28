@@ -77,7 +77,7 @@ func plant_seed_on_current_plot(plant_type: String):
 		current_plot.set_plant(plant)
 		current_plot.add_child(plant)
 		print("current plot plant: ", current_plot.plant)
-		plant.position = current_plot.position
+		plant.global_position = current_plot.position
 		
 func harvest_plant_on_current_plot():
 	if current_plot:
