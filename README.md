@@ -66,11 +66,11 @@ plot.water_level += randf_range(water_change_range.x, water_change_range.y)
 ### [F0.e] Each plant on the grid has a distinct type (e.g. one of 3 species) and a growth level (e.g. “level 1”, “level 2”, “level 3”).
 We have three plants all inheriting a base “plant” class, each with distinctive rules governing their growth and unique placeholder sprites. They can grow up to stage 3, after which the player can harvest them.
 
-###[F0.f] Simple spatial rules govern plant growth based on sun, water, and nearby plants (satisfying conditions unlock growth).
+### [F0.f] Simple spatial rules govern plant growth based on sun, water, and nearby plants (satisfying conditions unlock growth).
 Beyond water and sun requirements for every plant, there are unique rules plants must follow to grow: lettuce can only grow near other lettuce, tomato can only grow when alone, having any plants adjacent prohibits growth, and carrots can only grow near other types other than themselves, or by themselves.
 
-###[F0.g] A play scenario is completed when some condition is satisfied (e.g. at least X plants at growth level Y or above).
+### [F0.g] A play scenario is completed when some condition is satisfied (e.g. at least X plants at growth level Y or above).
 We are currently working on a scenario where players must achieve a certain number of plants at growth level 3 to complete a scenario.
 
-##Reflection
+## Reflection
 We haven’t changed the tools for the project, but our use of role titles has been very lenient. Since two in our group do not have experience in Godot and are eager to learn the engine and Godot’s native scripting language, (and since Godot packages most of its libraries together) we haven't been coordinating in terms of art direction and tools. In actuality, the only role that has been consistent is the production/design lead, which is Leif. We have not been using VSCode for our IDE as well; Godot has a native IDE built into its UI, which we are using.

@@ -10,4 +10,17 @@ offset_right = 8.0
 offset_bottom = 8.0
 text = "Next Turn"
 
+[node name="LevelCompleteLabel" type="Label" parent="."]
+top_level = true
+z_index = 1
+offset_left = 507.0
+offset_top = 264.0
+offset_right = 631.0
+offset_bottom = 300.0
+text = "=============
+Level Complete!
+============="
+horizontal_alignment = 2
+vertical_alignment = 2
+
 [connection signal="pressed" from="TurnButton" to="." method="_on_turn_button_pressed"]
