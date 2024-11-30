@@ -20,11 +20,12 @@ func _ready():
 	# Test encoding the grid
 	var encoded_grid = Plot.encode_grid(grid, parent_node)  # Pass parent_node to encode function
 	
+	print("Encoded Grid:", encoded_grid)
+	
 	# Test decoding the grid back to its original form
 	var decoded_grid = Plot.decode_grid(encoded_grid, parent_node)  # Pass parent_node to decode function
 
 	# Optionally, print the results for verification
-	print("Encoded Grid:", encoded_grid)
 	print("Decoded Grid:", decoded_grid)
 
 # Test function

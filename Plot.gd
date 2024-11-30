@@ -117,26 +117,38 @@ static func encode_grid(grid: Array, parent_node: Node2D) -> PackedByteArray:
 	var cell_size = 64
 	byte_array.append(grid_size)  # Encode the grid size (as an integer)
 	byte_array.append(cell_size)  # Encode the cell size (as an integer)
+	var offset = byte_array.size()  # The offset starts after the grid and cell size
 	
 	# Iterate through the grid and encode the plot data
 	for row in grid:
 		for plot in row:
 			# Encode plot data (sun level, water level, etc.)
-			byte_array.append(plot.sun_level)  # Use appendf() for floating-point numbers
-			byte_array.append(plot.water_level)  # Use appendf() for floating-point numbers
+			var floatByteArray = PackedByteArray([0,0,0,0])
+			floatByteArray.encode_float(0, plot.sun_level)
+			byte_array.append_array(floatByteArray)
+			floatByteArray.encode_float(0, plot.water_level)
+			byte_array.append_array(floatByteArray)
+			print(byte_array)
 			
 			# Encode player presence
 			if plot.player:
 				byte_array.append(1)  # Player present (encoded as an integer)
 			else:
 				byte_array.append(0)  # No player (encoded as an integer)
+				
+			offset += 1
 			
 			# Encode plant data
 			if plot.plant:
 				byte_array.append(1)  # Plant present (encoded as an integer)
 				byte_array.append(plot.plant.growth_level)  # Append growth level (integer)
-				byte_array.appendf(plot.plant.sun_req)  # Append sun requirement (float)
-				byte_array.appendf(plot.plant.water_req)  # Append water requirement (float)
+				
+				# Encode sun and water requirements as floats
+				floatByteArray.encode_float(0, plot.plant.sun_req)
+				byte_array.append_array(floatByteArray)
+				floatByteArray.encode_float(0, plot.plant.water_req)
+				byte_array.append_array(floatByteArray)
+				
 				byte_array.append(get_plant_type_flag(plot.plant))  # Append plant type flag (integer)
 			else:
 				byte_array.append(0)  # No plant (encoded as an integer)
@@ -201,7 +213,6 @@ static func decode_grid(byte_array: PackedByteArray, parent_node: Node2D) -> Arr
 
 	return grid
 
-
 static func bytes_to_float(byte_array: PackedByteArray, offset: int) -> float:
 	# Extract the 4-byte slice from the PackedByteArray
 	var slice = byte_array.slice(offset, offset + 4)
@@ -233,5 +244,3 @@ static func set_plant_type_from_flag(plant: Plant, flag: int) -> void:
 	plant.is_lettuce = (flag & 1) != 0
 	plant.is_carrot = (flag & 2) != 0
 	plant.is_tomato = (flag & 4) != 0
-	
-	
