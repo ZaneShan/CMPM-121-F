@@ -208,7 +208,7 @@ static func bytes_to_float(byte_array: PackedByteArray, offset: int) -> float:
 	
 	# Create a Buffer from the slice to interpret it as a float
 	var buffer = PackedByteArray(slice)
-	return buffer.get_float(0)  # Interpret the 4 bytes as a float32
+	return buffer.decode_float(0)  # Interpret the 4 bytes as a float32
 
 
 
@@ -218,12 +218,7 @@ static func bytes_to_int(byte_array: PackedByteArray, offset: int) -> int:
 	
 	# Create a Buffer from the slice to interpret it as an integer
 	var buffer = PackedByteArray(slice)
-	return buffer.get_int(0)  # Interpret the 4 bytes as an int32
-
-
-
-
-
+	return buffer.decode_s32(0)  # Interpret the 4 bytes as an int32
 
 static func get_plant_type_flag(plant: Plant) -> int:
 	if plant.is_lettuce:
