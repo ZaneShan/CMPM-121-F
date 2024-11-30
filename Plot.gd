@@ -154,8 +154,6 @@ static func encode_grid(grid: Array, parent_node: Node2D) -> PackedByteArray:
 
 	return byte_array
 
-
-
 static func decode_grid(byte_array: PackedByteArray, parent_node: Node2D) -> Array:
 	# Step 1: Read grid size and cell size from byte array
 	var grid_size = byte_array[0]  # The first byte contains the grid size
@@ -193,16 +191,37 @@ static func decode_grid(byte_array: PackedByteArray, parent_node: Node2D) -> Arr
 			var plant_flag = byte_array[offset]
 			offset += 1
 			if plant_flag == 1:
-				var plant = Plant.new()
-				plant.growth_level = byte_array[offset]
+				# Decode plant type
+				var growth_level = byte_array[offset]
 				offset += 1
-				plant.sun_req = bytes_to_float(byte_array, offset)
+				var sun_req = bytes_to_float(byte_array, offset)
 				offset += 4
-				plant.water_req = bytes_to_float(byte_array, offset)
+				var water_req = bytes_to_float(byte_array, offset)
 				offset += 4
-				set_plant_type_from_flag(plant, byte_array[offset])
+				var plant_type_flag = byte_array[offset]
 				offset += 1
+
+				# Instantiate the appropriate plant type based on the flag
+				var plant: Node2D
+				if plant_type_flag & 1:  # Lettuce
+					plant = preload("res://plants/Lettuce.tscn").instantiate()
+				elif plant_type_flag & 2:  # Carrot
+					plant = preload("res://plants/Carrot.tscn").instantiate()
+				elif plant_type_flag & 4:  # Tomato
+					plant = preload("res://plants/Tomato.tscn").instantiate()
+				else:
+					print("Error: Unknown plant type flag:", plant_type_flag)
+					continue  # Skip to next plot if unknown flag
+
+				# Set common plant properties
+				plant.growth_level = growth_level
+				plant.sun_req = sun_req
+				plant.water_req = water_req
+
+				# Assign the plant to the plot
 				plot.plant = plant
+				parent_node.add_child(plant)  # Add the plant to the scene
+				plant.global_position = plot.global_position  # Position the plant
 			else:
 				plot.plant = null
 
@@ -211,6 +230,7 @@ static func decode_grid(byte_array: PackedByteArray, parent_node: Node2D) -> Arr
 		print("Error: No player found in the grid!")
 
 	return grid
+
 
 static func bytes_to_float(byte_array: PackedByteArray, offset: int) -> float:
 	# Extract the 4-byte slice from the PackedByteArray

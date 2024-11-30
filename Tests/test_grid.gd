@@ -40,21 +40,32 @@ func test_encoder_decoder():
 			var plot = test_grid[x][y]
 			plot.sun_level = x * 10.0 + y
 			plot.water_level = 20.0 - (x + y)
-			
+
+			# Assign the player to a specific plot
 			if plot == test_grid[0][0]:
 				plot.player = player_scene.instantiate()  # Instantiate the player scene for this plot
 			else:
 				plot.player = null
-			
+
+			# Generate a plant based on a systematic condition (e.g., modulo)
 			if (x + y) % 2 == 0:
-				var current_plant = preload("res://plants/Carrot.tscn")  # Assuming Carrot plant scene
-				var plant = current_plant.instantiate()
-				plant.growth_level = (x + y) % 3
-				plant.sun_req = float(x + 1)
-				plant.water_req = float(y + 1)
-				plot.plant = plant
+				var plant_scene: PackedScene = null
+				if (x + y) % 6 == 0:
+					plant_scene = preload("res://plants/Lettuce.tscn")  # Lettuce plant scene
+				elif (x + y) % 6 == 2:
+					plant_scene = preload("res://plants/Carrot.tscn")  # Carrot plant scene
+				elif (x + y) % 6 == 4:
+					plant_scene = preload("res://plants/Tomato.tscn")  # Tomato plant scene
+
+				if plant_scene:
+					var plant = plant_scene.instantiate()
+					plant.growth_level = (x + y) % 3
+					plant.sun_req = float(x + 1)
+					plant.water_req = float(y + 1)
+					plot.plant = plant
 			else:
 				plot.plant = null
+
 
 	# Encode the grid (Pass parent_node to encode function)
 	var encoded_data = Plot.encode_grid(test_grid, parent_node)
@@ -91,4 +102,20 @@ func test_encoder_decoder():
 func print_grid_state(grid):
 	for row in grid:
 		for plot in row:
-			print("Plot @ ", plot.coordinates, " | Sun: ", plot.sun_level, " | Water: ", plot.water_level, " | Player: ", plot.player, " | Plant: ", plot.plant)
+			var plant_info = "None"
+			if plot.plant:
+				var plant_type = "Unknown"
+				if plot.plant.is_lettuce:
+					plant_type = "Lettuce"
+				elif plot.plant.is_carrot:
+					plant_type = "Carrot"
+				elif plot.plant.is_tomato:
+					plant_type = "Tomato"
+
+				plant_info = "Growth Level: %d, Type: %s" % [plot.plant.growth_level, plant_type]
+
+			print("Plot @ ", plot.coordinates, 
+				  " | Sun: ", plot.sun_level, 
+				  " | Water: ", plot.water_level, 
+				  " | Player: ", plot.player, 
+				  " | Plant: ", plant_info)
