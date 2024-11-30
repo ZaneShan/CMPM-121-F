@@ -11,9 +11,9 @@ var plant_stage_1 = null
 var plant_stage_2 = null
 var plant_stage_3 = null
 
-var is_lettuce = false
-var is_carrot = false
-var is_tomato = false
+@export var is_lettuce = false
+@export var is_carrot = false
+@export var is_tomato = false
 
 func _ready():
 	# Get references to the child Sprite nodes for each growth stage

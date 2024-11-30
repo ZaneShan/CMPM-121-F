@@ -4,30 +4,30 @@ extends Node2D
 @onready var player_scene = preload("res://Player.tscn")
 
 # Grid parameters
-const GRID_SIZE = 5
+const GRID_SIZE = 3
 const CELL_SIZE = 64
 
 # Preload the Plot scene (this will be used to access the static functions)
 var plot_scene = preload("res://Plot.tscn")
 
 func _ready():
-	# Access GridParent node in the scene
-	var parent_node = $GridParent  # Ensure this exists in the scene
-
-	# Create the grid using the static function from Plot.gd
-	var grid = Plot.create_grid(10, 64, parent_node)  # 10x10 grid, cell size 64
-
-	# Test encoding the grid
-	var encoded_grid = Plot.encode_grid(grid, parent_node)  # Pass parent_node to encode function
-	
-	print("Encoded Grid:", encoded_grid)
-	
-	# Test decoding the grid back to its original form
-	var decoded_grid = Plot.decode_grid(encoded_grid, parent_node)  # Pass parent_node to decode function
-
-	# Optionally, print the results for verification
-	print("Decoded Grid:", decoded_grid)
-
+	## Access GridParent node in the scene
+	#var parent_node = $GridParent  # Ensure this exists in the scene
+#
+	## Create the grid using the static function from Plot.gd
+	#var grid = Plot.create_grid(GRID_SIZE, CELL_SIZE, parent_node)
+#
+	## Test encoding the grid
+	#var encoded_grid = Plot.encode_grid(grid, parent_node)  # Pass parent_node to encode function
+	#
+	#print("Encoded Grid:", encoded_grid)
+	#
+	## Test decoding the grid back to its original form
+	#var decoded_grid = Plot.decode_grid(encoded_grid, parent_node)  # Pass parent_node to decode function
+#
+	## Optionally, print the results for verification
+	#print("Decoded Grid:", decoded_grid)
+	test_encoder_decoder()
 # Test function
 func test_encoder_decoder():
 	# Create a grid and parent node
@@ -35,14 +35,13 @@ func test_encoder_decoder():
 	var test_grid = Plot.create_grid(GRID_SIZE, CELL_SIZE, parent_node)  # Create the grid using static method
 
 	# Populate the test grid with sample data
-	var player_plot = Vector2(1, 1)  # Player on this plot
 	for x in range(GRID_SIZE):
 		for y in range(GRID_SIZE):
 			var plot = test_grid[x][y]
 			plot.sun_level = x * 10.0 + y
 			plot.water_level = 20.0 - (x + y)
 			
-			if x == player_plot.x and y == player_plot.y:
+			if plot == test_grid[0][0]:
 				plot.player = player_scene.instantiate()  # Instantiate the player scene for this plot
 			else:
 				plot.player = null
@@ -86,7 +85,7 @@ func test_encoder_decoder():
 			else:
 				assert(decoded_plot.plant == null, "Unexpected plant at ($x, $y)")
 	print_grid_state(test_grid)
-	print("Test passed!")
+	#print("Test passed!")
 
 # Helper function to print grid state for debugging
 func print_grid_state(grid):
