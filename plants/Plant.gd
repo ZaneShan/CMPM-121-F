@@ -1,7 +1,7 @@
 extends Node2D
 class_name Plant
 var growth_level = 0
-var max_growth_level = 3
+var max_growth_level = 2
 var current_plot = null
 @export var sun_req = 1.0
 @export var water_req = 1.0

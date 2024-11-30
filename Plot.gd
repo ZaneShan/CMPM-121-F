@@ -225,9 +225,11 @@ static func decode_grid(byte_array: PackedByteArray, parent_node: Node2D) -> Arr
 				plant.water_req = water_req
 
 				# Assign the plant to the plot
+				# Assign the plant to the plot
 				plot.plant = plant
-				parent_node.add_child(plant)  # Add the plant to the scene
+				plot.add_child(plant)  # Add the plant to the plot, making it its parent
 				plant.global_position = plot.global_position  # Position the plant
+
 			else:
 				plot.plant = null
 
