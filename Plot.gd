@@ -163,6 +163,8 @@ static func decode_grid(byte_array: PackedByteArray, parent_node: Node2D) -> Arr
 	# Step 2: Decode the encoded grid data
 	var offset = 2  # Start reading after the grid size and cell size bytes
 	var player_found = false  # Ensure only one player is placed
+	var player_x = 0
+	var player_y = 0
 
 	for x in range(grid_size):
 		for y in range(grid_size):
@@ -182,8 +184,12 @@ static func decode_grid(byte_array: PackedByteArray, parent_node: Node2D) -> Arr
 					print("Warning: Multiple plots have a player! Fixing data...")
 					plot.player = null  # Reset the extra player flags
 				else:
+					var player = preload("res://Player.tscn").instantiate()
 					plot.player = Player.new()  # Assign player instance
 					player_found = true
+					print("PLAYER FOUND")
+					player_x = x
+					player_y = y
 			else:
 				plot.player = null
 
@@ -229,6 +235,14 @@ static func decode_grid(byte_array: PackedByteArray, parent_node: Node2D) -> Arr
 	if not player_found:
 		print("Error: No player found in the grid!")
 
+	#place player
+	if (player_found):
+		var player = preload("res://Player.tscn").instantiate()
+		player.plots = grid
+		player.grid_size = grid_size
+		player.moveTo(player_x, player_y)
+		parent_node.add_child(player)
+	
 	return grid
 
 
