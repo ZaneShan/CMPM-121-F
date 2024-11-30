@@ -2,8 +2,6 @@ extends Node2D
 class_name Plot
 @export var sun_level: float = 0.0  # Current sun energy level in the plot
 @export var water_level: float = 10.0  # Current water level in the plot
-@export var sun_requirement: float = 5.0  # Sun requirement for plants in this plot
-@export var water_requirement: float = 5.0  # Water requirement for plants in this plot
 var sun_level_range = Vector2(5, 10)  # Random sun level range for each turn
 var water_change_range = Vector2(-2, 2)  # Random water change range for each turn
 
@@ -109,3 +107,136 @@ func get_adjacent_plots() -> Array:
 		adjacent_plots.append(plots_array[current_x][current_y + 1])  # Down
 	
 	return adjacent_plots
+	
+	
+static func encode_grid(grid: Array, parent_node: Node2D) -> PackedByteArray:
+	var byte_array = PackedByteArray()
+	
+	# Encode the grid size and cell size
+	var grid_size = grid.size()  # Assuming square grid (size x size)
+	var cell_size = 64
+	byte_array.append(grid_size)  # Encode the grid size (as an integer)
+	byte_array.append(cell_size)  # Encode the cell size (as an integer)
+	
+	# Iterate through the grid and encode the plot data
+	for row in grid:
+		for plot in row:
+			# Encode plot data (sun level, water level, etc.)
+			byte_array.append(plot.sun_level)  # Use appendf() for floating-point numbers
+			byte_array.append(plot.water_level)  # Use appendf() for floating-point numbers
+			
+			# Encode player presence
+			if plot.player:
+				byte_array.append(1)  # Player present (encoded as an integer)
+			else:
+				byte_array.append(0)  # No player (encoded as an integer)
+			
+			# Encode plant data
+			if plot.plant:
+				byte_array.append(1)  # Plant present (encoded as an integer)
+				byte_array.append(plot.plant.growth_level)  # Append growth level (integer)
+				byte_array.appendf(plot.plant.sun_req)  # Append sun requirement (float)
+				byte_array.appendf(plot.plant.water_req)  # Append water requirement (float)
+				byte_array.append(get_plant_type_flag(plot.plant))  # Append plant type flag (integer)
+			else:
+				byte_array.append(0)  # No plant (encoded as an integer)
+
+	return byte_array
+
+
+
+static func decode_grid(byte_array: PackedByteArray, parent_node: Node2D) -> Array:
+	# Step 1: Read grid size and cell size from byte array
+	var grid_size = byte_array[0]  # The first byte contains the grid size
+	var cell_size = byte_array[1]  # The second byte contains the cell size
+	var grid = create_grid(grid_size, cell_size, parent_node)  # Create the grid using the size and cell size
+
+	# Step 2: Decode the encoded grid data
+	var offset = 2  # Start reading after the grid size and cell size bytes
+	var player_found = false  # Ensure only one player is placed
+
+	for x in range(grid_size):
+		for y in range(grid_size):
+			var plot = grid[x][y]
+			
+			# Decode plot data
+			plot.sun_level = bytes_to_float(byte_array, offset)
+			offset += 4
+			plot.water_level = bytes_to_float(byte_array, offset)
+			offset += 4
+
+			# Decode player presence
+			var player_flag = byte_array[offset]
+			offset += 1
+			if player_flag == 1:
+				if player_found:
+					print("Warning: Multiple plots have a player! Fixing data...")
+					plot.player = null  # Reset the extra player flags
+				else:
+					plot.player = Player.new()  # Assign player instance
+					player_found = true
+			else:
+				plot.player = null
+
+			# Decode plant presence
+			var plant_flag = byte_array[offset]
+			offset += 1
+			if plant_flag == 1:
+				var plant = Plant.new()
+				plant.growth_level = byte_array[offset]
+				offset += 1
+				plant.sun_req = bytes_to_float(byte_array, offset)
+				offset += 4
+				plant.water_req = bytes_to_float(byte_array, offset)
+				offset += 4
+				set_plant_type_from_flag(plant, byte_array[offset])
+				offset += 1
+				plot.plant = plant
+			else:
+				plot.plant = null
+
+	# Step 3: Error handling for missing player
+	if not player_found:
+		print("Error: No player found in the grid!")
+
+	return grid
+
+
+static func bytes_to_float(byte_array: PackedByteArray, offset: int) -> float:
+	# Extract the 4-byte slice from the PackedByteArray
+	var slice = byte_array.slice(offset, offset + 4)
+	
+	# Create a Buffer from the slice to interpret it as a float
+	var buffer = PackedByteArray(slice)
+	return buffer.get_float(0)  # Interpret the 4 bytes as a float32
+
+
+
+static func bytes_to_int(byte_array: PackedByteArray, offset: int) -> int:
+	# Extract the 4-byte slice from the PackedByteArray
+	var slice = byte_array.slice(offset, offset + 4)
+	
+	# Create a Buffer from the slice to interpret it as an integer
+	var buffer = PackedByteArray(slice)
+	return buffer.get_int(0)  # Interpret the 4 bytes as an int32
+
+
+
+
+
+
+static func get_plant_type_flag(plant: Plant) -> int:
+	if plant.is_lettuce:
+		return 1
+	elif plant.is_carrot:
+		return 2
+	elif plant.is_tomato:
+		return 4
+	return 0
+
+static func set_plant_type_from_flag(plant: Plant, flag: int) -> void:
+	plant.is_lettuce = (flag & 1) != 0
+	plant.is_carrot = (flag & 2) != 0
+	plant.is_tomato = (flag & 4) != 0
+	
+	

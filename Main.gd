@@ -12,8 +12,12 @@ func _ready():
 	
 	var level_complete_label = $LevelCompleteLabel
 	level_complete_label.visible = false
+	
+	
 	var viewport_size = get_viewport_rect().size
-	level_complete_label.position = plotsArray[0][0].global_position#Vector2(viewport_size.x/2, viewport_size.y/2)
+	level_complete_label.position = plotsArray[0][0].global_position
+	
+	
 	# Assign the plotsArray to each plot
 	for row in plotsArray:
 		for plot in row:
