@@ -91,6 +91,9 @@ func plant_seed_on_current_plot(plant_type: String):
 		print("current plot plant: ", current_plot.plant)
 		plant.global_position = current_plot.position
 		plant.current_plot = current_plot
+	var parent_node = get_parent()
+	if parent_node.has_method("encode_current_grid"):
+		parent_node.encode_current_grid()
 		
 func harvest_plant_on_current_plot():
 	if current_plot:
