@@ -24,8 +24,14 @@ func _ready():
 			plot.set_plots_array(plotsArray)  # Set the grid reference in each plot
 
 	# Connect the turn button
-	var button = $TurnButton
-	button.connect("pressed", Callable(self, "_on_turn_complete"))
+	var turn_button = $TurnButton
+	turn_button.connect("pressed", Callable(self, "_on_turn_complete"))
+	
+	var save_button = $SaveButton
+	save_button.connect("pressed", Callable(self, "save"))
+	
+	var load_button = $LoadButton
+	load_button.connect("pressed", Callable(self, "load"))
 
 	# Add the player
 	var player = preload("res://Player.tscn").instantiate()
@@ -45,6 +51,44 @@ func _on_turn_complete():
 			#print("Plot coordinates: ", plot.coordinates, " | Position: ", plot.position, " | Plant: ", plot.plant)
 			plot.update_plot(plot)
 	check_level_complete()
+	
+func save():
+	# Get the encoded grid data (PackedByteArray)
+	var encoded_data = Plot.encode_grid(plotsArray, self)
+
+	var file = FileAccess.open("user://grid_save.dat", FileAccess.WRITE)
+	if file == null:
+		print("Failed to open file for saving!")
+		return
+
+	# Write the packed byte array (TBS) to the file
+	file.store_buffer(encoded_data)
+
+	# Close the file after writing
+	file.close()
+
+	print("Grid data saved successfully!")
+	
+func load():
+	# Create a File object
+	var file = FileAccess.open("user://grid_save.dat", FileAccess.READ)
+
+	# Open the file for reading (use the same path as in save function)
+	if file == null:
+		print("Failed to open file for loading!")
+		return
+
+	# Read the packed byte array from the file
+	var byte_array = file.get_buffer(file.get_length())
+
+	# Close the file after reading
+	file.close()
+
+	# Decode the grid data from the byte array
+	var decoded_grid = Plot.decode_grid(byte_array, self)
+
+	# Assign the decoded grid to your variable or use it as needed
+	print("Grid data loaded successfully!")
 
 # Check if level is complete
 func check_level_complete():
