@@ -64,43 +64,64 @@ func _on_turn_complete():
 	check_level_complete()
 	
 func save():
-	# Get the encoded grid data (PackedByteArray)
-	var encoded_data = Plot.encode_grid(plotsArray, self)
-
 	var file = FileAccess.open("user://grid_save.dat", FileAccess.WRITE)
 	if file == null:
 		print("Failed to open file for saving!")
 		return
 
-	# Write the packed byte array (TBS) to the file
+	# Save the encoded grid data
+	var encoded_data = Plot.encode_grid(plotsArray, self)
+	file.store_32(encoded_data.size())
 	file.store_buffer(encoded_data)
-
-	# Close the file after writing
-	file.close()
-
-	print("Grid data saved successfully!")
 	
-func load():
-	# Create a File object
-	var file = FileAccess.open("user://grid_save.dat", FileAccess.READ)
+	# Save the undo stack
+	file.store_32(undo_stack.size())
+	for state in undo_stack:
+		file.store_32(state.size())
+		file.store_buffer(state)
 
-	# Open the file for reading (use the same path as in save function)
+	# Save the redo stack
+	file.store_32(redo_stack.size())
+	for state in redo_stack:
+		file.store_32(state.size())
+		file.store_buffer(state)
+
+	file.close()
+	print("Grid data and stacks saved successfully!")
+
+func load():
+	var file = FileAccess.open("user://grid_save.dat", FileAccess.READ)
 	if file == null:
 		print("Failed to open file for loading!")
 		return
 
-	# Read the packed byte array from the file
-	var byte_array = file.get_buffer(file.get_length())
-
-	# Close the file after reading
-	file.close()
-
+	# Load the encoded grid data
+	var grid_size = file.get_32()
+	var encoded_data = file.get_buffer(grid_size)
 	plot_scene.clear_grid(self, plotsArray)
-	# Decode the grid data from the byte array
-	var plotsArray = Plot.decode_grid(byte_array, self)
+	plotsArray = Plot.decode_grid(encoded_data, self)
 
-	# Assign the decoded grid to your variable or use it as needed
-	print("Grid data loaded successfully!")
+	# Load the undo stack
+	undo_stack.clear()
+	var undo_stack_size = file.get_32()
+	print("Undo stack size: ", undo_stack_size)
+	for i in range(undo_stack_size):
+		var state_size = file.get_32()
+		var state = file.get_buffer(state_size)
+		undo_stack.append(state)
+
+	# Load the redo stack
+	redo_stack.clear()
+	var redo_stack_size = file.get_32()
+	print("Redo stack size: ", redo_stack_size)
+	for i in range(redo_stack_size):
+		var state_size = file.get_32()
+		var state = file.get_buffer(state_size)
+		redo_stack.append(state)
+
+	file.close()
+	print("Grid data and stacks loaded successfully!")
+
 	
 # Undo the last action
 func undo():

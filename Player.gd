@@ -20,13 +20,13 @@ func _physics_process(delta):
 	position = position.move_toward(target_position, cell_size * 5 * delta)
 
 func _input(event):
-	if event.is_action_pressed("ui_up"):
+	if event.is_action_pressed("ui_up") or event.is_action_pressed("up"):
 		move(Vector2(0, -1))
-	elif event.is_action_pressed("ui_down"):
+	elif event.is_action_pressed("ui_down") or event.is_action_pressed("down"):
 		move(Vector2(0, 1))
-	elif event.is_action_pressed("ui_left"):
+	elif event.is_action_pressed("ui_left") or event.is_action_pressed("left"):
 		move(Vector2(-1, 0))
-	elif event.is_action_pressed("ui_right"):
+	elif event.is_action_pressed("ui_right") or event.is_action_pressed("right"):
 		move(Vector2(1, 0))
 	elif event.is_action_pressed("ui_accept"):
 		# Call plant_seed when ui_accept is pressed
