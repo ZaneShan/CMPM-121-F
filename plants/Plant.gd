@@ -67,6 +67,10 @@ func update_plant_growth():
 	plant_stage_3.visible = growth_level == 2
 	
 func CheckIfNear(plant_type: String, currentPlot) -> bool:
+	if currentPlot == null:
+		print("Error: currentPlot is null!")
+		return false
+		
 	var nearby_plots = currentPlot.get_adjacent_plots()
 	
 	# Check each adjacent plot for a plant of the given type

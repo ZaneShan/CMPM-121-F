@@ -80,6 +80,28 @@ static func create_grid(grid_size: int, cell_size: int, parent: Node2D) -> Array
 	
 var plots_array = []  # Reference to the parent grid of plots
 
+# Clear grid and delete all nodes, including the player
+static func clear_grid(parent: Node2D, plots_array: Array):
+	# Delete all plot nodes in the grid
+	for row in plots_array:
+		for plot in row:
+			plot.queue_free()  # Queue each plot for deletion
+
+	# Clear the plot array as well
+	plots_array.clear()
+
+	# Check if there is a player node and delete it
+	var player_node = parent.get_node("Player") if parent.has_node("Player") else null
+	var player2_node = parent.get_node("Player2") if parent.has_node("Player2") else null
+	
+	if player_node:
+		player_node.queue_free()  # Delete the "Player" node
+
+	if player2_node:
+		player2_node.queue_free()  # Delete the "Player2" node
+	
+	print("Grid cleared and player deleted.")
+
 # Set the plots array explicitly when creating the grid
 func set_plots_array(new_plots_array):
 	plots_array = new_plots_array
@@ -244,6 +266,7 @@ static func decode_grid(byte_array: PackedByteArray, parent_node: Node2D) -> Arr
 		player.grid_size = grid_size
 		player.moveTo(player_x, player_y)
 		parent_node.add_child(player)
+		player.name = "Player"
 	
 	return grid
 

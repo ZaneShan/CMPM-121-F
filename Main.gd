@@ -5,6 +5,10 @@ var plotsArray = []
 
 const plot_scene = preload("res://Plot.gd")  # Load the Plot script
 
+# Undo and Redo stacks to store encoded grid states
+var undo_stack = []
+var redo_stack = []
+
 func _ready():
 	# Use the static method from Plot to create the grid
 	var cell_size = 64
@@ -32,6 +36,12 @@ func _ready():
 	
 	var load_button = $LoadButton
 	load_button.connect("pressed", Callable(self, "load"))
+	
+	var undo_button = $UndoButton
+	undo_button.connect("pressed", Callable(self, "undo"))
+	
+	var redo_button = $RedoButton
+	redo_button.connect("pressed", Callable(self, "redo"))
 
 	# Add the player
 	var player = preload("res://Player.tscn").instantiate()
@@ -46,6 +56,7 @@ func _ready():
 # Turn update button callback
 # Turn update button callback
 func _on_turn_complete():
+	encode_current_grid()
 	for row in plotsArray:
 		for plot in row:
 			#print("Plot coordinates: ", plot.coordinates, " | Position: ", plot.position, " | Plant: ", plot.plant)
@@ -84,11 +95,54 @@ func load():
 	# Close the file after reading
 	file.close()
 
+	plot_scene.clear_grid(self, plotsArray)
 	# Decode the grid data from the byte array
-	var decoded_grid = Plot.decode_grid(byte_array, self)
+	var plotsArray = Plot.decode_grid(byte_array, self)
 
 	# Assign the decoded grid to your variable or use it as needed
 	print("Grid data loaded successfully!")
+	
+# Undo the last action
+func undo():
+	if undo_stack.size() > 0:
+		# Pop the most recent state from the undo stack
+		var last_state = undo_stack.pop_back()
+		
+		# Decode the grid from the packed byte array
+		plot_scene.clear_grid(self, plotsArray)
+		plotsArray = Plot.decode_grid(last_state, self)
+		
+		# Push the state to the redo stack for possible redo later
+		redo_stack.append(last_state)
+
+		print("Undo: Grid restored to previous state.")
+	else:
+		print("No more actions to undo.")
+		
+# Redo the last undone action
+func redo():
+	if redo_stack.size() > 0:
+		# Pop the most recent state from the redo stack
+		var redo_state = redo_stack.pop_back()
+		
+		# Decode the grid from the packed byte array
+		plot_scene.clear_grid(self, plotsArray)
+		plotsArray = Plot.decode_grid(redo_state, self)
+		
+		# Push the state back to the undo stack
+		undo_stack.append(redo_state)
+
+		print("Redo: Grid restored to the next state.")
+	else:
+		print("No more actions to redo.")
+	
+func encode_current_grid():
+	# This assumes you have the encode_grid method from before
+	var encoded_data = Plot.encode_grid(plotsArray, self)
+	undo_stack.append(encoded_data)
+	redo_stack.clear()  # Clear redo stack when new action happens
+	print("Current grid state encoded and pushed to undo stack")
+	print(undo_stack)
 
 # Check if level is complete
 func check_level_complete():
