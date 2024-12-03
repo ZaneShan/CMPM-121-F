@@ -32,11 +32,13 @@ func update_plant(plant, plot):
 	# Check if plant meets growth requirements
 	if plot.sun_level >= plant.sun_req and plot.water_level >= plant.water_req:
 		if (growth_level < max_growth_level):
-			growth_level += 1
-			if (growth_level < max_growth_level):
-				plant.grow()
-		
-func grow():
+			if (plant.grow() == true):
+				growth_level += 1
+				update_plant_growth()
+	print ("plant growth level: ", plant.growth_level)
+	
+
+func grow() -> bool:
 	# conditionals dependent on plant type
 	if (is_lettuce):
 		# lettuce can only grow near other lettuce
@@ -54,8 +56,7 @@ func grow():
 		# carrots can only grow near other types other than themselves, or by themselves
 		if(CheckIfNear("Carrot", current_plot)):
 			return false
-	
-	update_plant_growth()
+	return true
 
 # Checks if the plant is fully grown
 func is_fully_grown() -> bool:
