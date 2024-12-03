@@ -150,7 +150,7 @@ static func encode_grid(grid: Array, parent_node: Node2D) -> PackedByteArray:
 			byte_array.append_array(floatByteArray)
 			floatByteArray.encode_float(0, plot.water_level)
 			byte_array.append_array(floatByteArray)
-			print(byte_array)
+			#print(byte_array)
 			
 			# Encode player presence
 			if plot.player:

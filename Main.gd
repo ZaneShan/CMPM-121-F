@@ -141,7 +141,7 @@ func loadAutosave():
 	# Load the undo stack
 	undo_stack.clear()
 	var undo_stack_size = file.get_32()
-	print("Undo stack size: ", undo_stack_size)
+	#print("Undo stack size: ", undo_stack_size)
 	for i in range(undo_stack_size):
 		var state_size = file.get_32()
 		var state = file.get_buffer(state_size)
@@ -150,7 +150,7 @@ func loadAutosave():
 	# Load the redo stack
 	redo_stack.clear()
 	var redo_stack_size = file.get_32()
-	print("Redo stack size: ", redo_stack_size)
+	#print("Redo stack size: ", redo_stack_size)
 	for i in range(redo_stack_size):
 		var state_size = file.get_32()
 		var state = file.get_buffer(state_size)
@@ -201,7 +201,7 @@ func load():
 	# Load the undo stack
 	undo_stack.clear()
 	var undo_stack_size = file.get_32()
-	print("Undo stack size: ", undo_stack_size)
+	#print("Undo stack size: ", undo_stack_size)
 	for i in range(undo_stack_size):
 		var state_size = file.get_32()
 		var state = file.get_buffer(state_size)
@@ -210,7 +210,7 @@ func load():
 	# Load the redo stack
 	redo_stack.clear()
 	var redo_stack_size = file.get_32()
-	print("Redo stack size: ", redo_stack_size)
+	#print("Redo stack size: ", redo_stack_size)
 	for i in range(redo_stack_size):
 		var state_size = file.get_32()
 		var state = file.get_buffer(state_size)
@@ -232,6 +232,7 @@ func undo():
 		
 		# Push the state to the redo stack for possible redo later
 		redo_stack.append(last_state)
+		check_level_complete()
 
 		print("Undo: Grid restored to previous state.")
 	else:
@@ -249,7 +250,8 @@ func redo():
 		
 		# Push the state back to the undo stack
 		undo_stack.append(redo_state)
-
+		check_level_complete()
+		
 		print("Redo: Grid restored to the next state.")
 	else:
 		print("No more actions to redo.")
@@ -260,7 +262,7 @@ func encode_current_grid():
 	undo_stack.append(encoded_data)
 	redo_stack.clear()  # Clear redo stack when new action happens
 	print("Current grid state encoded and pushed to undo stack")
-	print(undo_stack)
+	#print(undo_stack)
 
 # Check if level is complete
 func check_level_complete():
@@ -269,9 +271,11 @@ func check_level_complete():
 		for plot in row:
 			if plot.has_plant() and plot.get_plant().is_fully_grown():
 				grown_plants += 1
-
+	var level_complete_label = $LevelCompleteLabel
 	# Check against your win condition
 	if grown_plants >= 5:  # Example win condition
 		print("Level Complete!")
-		var level_complete_label = $LevelCompleteLabel
+		
 		level_complete_label.visible = true
+	else:
+		level_complete_label.visible = false
