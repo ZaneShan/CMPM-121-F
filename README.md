@@ -113,3 +113,6 @@ We refactored our save function for the manual save and translated so that it wo
 
 ### [F1.d] The player must be able to undo every major choice (all the way back to the start of play), even from a saved game. They should be able to redo (undo of undo operations) multiple times.
 Because we save after every turn, we automatically are able to undo every major choice based on the latest change. We are also able to redo an undo using a seperate redo stack in order to keep track of the changes. 
+
+## Reflection
+The only mindset change we had coming into this sprint was how we structured our code to better help us in the future. We made sure that functions were really one purpose functions so that debugging was made easier. We did this so that future requirements could be implemented seemlessly and in doing so this made it easier to explain our code.
