@@ -33,10 +33,22 @@ func _ready():
 	turn_button.connect("pressed", Callable(self, "_on_turn_complete"))
 	
 	var save_button = $SaveButton
-	save_button.connect("pressed", Callable(self, "save"))
+	save_button.connect("pressed", Callable(self, "save").bind("save1"))
+	
+	var save_button2 = $SaveButton2
+	save_button2.connect("pressed", Callable(self, "save").bind("save2"))
+	
+	var save_button3 = $SaveButton3
+	save_button3.connect("pressed", Callable(self, "save").bind("save3"))
 	
 	var load_button = $LoadButton
-	load_button.connect("pressed", Callable(self, "load"))
+	load_button.connect("pressed", Callable(self, "load").bind("save1"))
+	
+	var load_button2 = $LoadButton2
+	load_button2.connect("pressed", Callable(self, "load").bind("save2"))
+	
+	var load_button3 = $LoadButton3
+	load_button3.connect("pressed", Callable(self, "load").bind("save3"))
 	
 	var undo_button = $UndoButton
 	undo_button.connect("pressed", Callable(self, "undo"))
@@ -160,8 +172,8 @@ func loadAutosave():
 	print("Grid data and stacks loaded successfully!")
 	
 	
-func save():
-	var file = FileAccess.open("user://grid_save.dat", FileAccess.WRITE)
+func save(fileName: String):
+	var file = FileAccess.open("user://grid_" + fileName + ".dat", FileAccess.WRITE)
 	if file == null:
 		print("Failed to open file for saving!")
 		return
@@ -186,8 +198,8 @@ func save():
 	file.close()
 	print("Grid data and stacks saved successfully!")
 
-func load():
-	var file = FileAccess.open("user://grid_save.dat", FileAccess.READ)
+func load(fileName: String):
+	var file = FileAccess.open("user://grid_" + fileName + ".dat", FileAccess.READ)
 	if file == null:
 		print("Failed to open file for loading!")
 		return
