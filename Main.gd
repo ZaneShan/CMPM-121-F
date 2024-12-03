@@ -61,7 +61,7 @@ func _ready():
 	autosave_button.connect("pressed", Callable(self, "loadAutosave"))
 	
 	var autosaveClose_button = $AutosaveCloseButton
-	autosaveClose_button.connect("pressed", Callable(self, "closeAutosave"))
+	autosaveClose_button.connect("pressed", Callable(self, "hideAutosavePrompt"))
 
 	# Add the player
 	var player = preload("res://Player.tscn").instantiate()
@@ -75,7 +75,22 @@ func _ready():
 	
 	encode_current_grid() # Save start of the game to undo stack
 
-# Turn update button callback
+func showAutosavePrompt():
+	var autosaveLabel = $AutosaveLabel
+	var autosaveButton = $AutosaveButton
+	var autosaveCloseButton = $AutosaveCloseButton
+	autosaveLabel.visible = true
+	autosaveButton.visible = true
+	autosaveCloseButton.visible = true
+	
+func hideAutosavePrompt():
+	var autosaveLabel = $AutosaveLabel
+	var autosaveButton = $AutosaveButton
+	var autosaveCloseButton = $AutosaveCloseButton
+	autosaveLabel.visible = false
+	autosaveButton.visible = false
+	autosaveCloseButton.visible = false
+
 # Turn update button callback
 func _on_turn_complete():
 	
@@ -86,20 +101,8 @@ func _on_turn_complete():
 	encode_current_grid()
 	check_level_complete()
 	autosave()
-	var autosaveLabel = $AutosaveLabel
-	var autosaveButton = $AutosaveButton
-	var autosaveCloseButton = $AutosaveCloseButton
-	autosaveLabel.visible = false
-	autosaveButton.visible = false
-	autosaveCloseButton.visible = false
+	hideAutosavePrompt()
 
-func closeAutosave():
-	var autosaveLabel = $AutosaveLabel
-	var autosaveButton = $AutosaveButton
-	var autosaveCloseButton = $AutosaveCloseButton
-	autosaveLabel.visible = false
-	autosaveButton.visible = false
-	autosaveCloseButton.visible = false
 	
 func checkAutosave():
 	var file = FileAccess.open("user://grid_autosave.dat", FileAccess.READ)
@@ -108,12 +111,7 @@ func checkAutosave():
 		return
 	file.close()  # Close the file after checking
 
-	var autosaveLabel = $AutosaveLabel
-	var autosaveButton = $AutosaveButton
-	var autosaveCloseButton = $AutosaveCloseButton
-	autosaveLabel.visible = true
-	autosaveButton.visible = true
-	autosaveCloseButton.visible = true
+	showAutosavePrompt()
 
 func autosave():
 	var file = FileAccess.open("user://grid_autosave.dat", FileAccess.WRITE)
@@ -142,12 +140,7 @@ func autosave():
 	print("Grid data and stacks saved successfully!")
 
 func loadAutosave():
-	var autosaveLabel = $AutosaveLabel
-	var autosaveButton = $AutosaveButton
-	var autosaveCloseButton = $AutosaveCloseButton
-	autosaveLabel.visible = false
-	autosaveButton.visible = false
-	autosaveCloseButton.visible = false
+	hideAutosavePrompt()
 	var file = FileAccess.open("user://grid_autosave.dat", FileAccess.READ)
 	if file == null:
 		print("Failed to open file for loading!")
