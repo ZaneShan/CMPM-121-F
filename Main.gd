@@ -10,6 +10,7 @@ var undo_stack = []
 var redo_stack = []
 
 func _ready():
+	checkAutosave()
 	# Use the static method from Plot to create the grid
 	var cell_size = 64
 	plotsArray = plot_scene.create_grid(grid_size, cell_size, self)
@@ -42,6 +43,12 @@ func _ready():
 	
 	var redo_button = $RedoButton
 	redo_button.connect("pressed", Callable(self, "redo"))
+	
+	var autosave_button = $AutosaveButton
+	autosave_button.connect("pressed", Callable(self, "loadAutosave"))
+	
+	var autosaveClose_button = $AutosaveCloseButton
+	autosaveClose_button.connect("pressed", Callable(self, "closeAutosave"))
 
 	# Add the player
 	var player = preload("res://Player.tscn").instantiate()
@@ -56,12 +63,102 @@ func _ready():
 # Turn update button callback
 # Turn update button callback
 func _on_turn_complete():
-	encode_current_grid()
+	
 	for row in plotsArray:
 		for plot in row:
 			#print("Plot coordinates: ", plot.coordinates, " | Position: ", plot.position, " | Plant: ", plot.plant)
 			plot.update_plot(plot)
+	encode_current_grid()
 	check_level_complete()
+	autosave()
+
+func closeAutosave():
+	var autosaveLabel = $AutosaveLabel
+	var autosaveButton = $AutosaveButton
+	var autosaveCloseButton = $AutosaveCloseButton
+	autosaveLabel.visible = false
+	autosaveButton.visible = false
+	autosaveCloseButton.visible = false
+	
+func checkAutosave():
+	var file = FileAccess.open("user://grid_autosave.dat", FileAccess.READ)
+	if file == null:
+		print("No autosave file found")
+		return
+	file.close()  # Close the file after checking
+
+	var autosaveLabel = $AutosaveLabel
+	var autosaveButton = $AutosaveButton
+	var autosaveCloseButton = $AutosaveCloseButton
+	autosaveLabel.visible = true
+	autosaveButton.visible = true
+	autosaveCloseButton.visible = true
+
+func autosave():
+	var file = FileAccess.open("user://grid_autosave.dat", FileAccess.WRITE)
+	if file == null:
+		print("Failed to open file for saving!")
+		return
+
+	# Save the encoded grid data
+	var encoded_data = Plot.encode_grid(plotsArray, self)
+	file.store_32(encoded_data.size())
+	file.store_buffer(encoded_data)
+	
+	# Save the undo stack
+	file.store_32(undo_stack.size())
+	for state in undo_stack:
+		file.store_32(state.size())
+		file.store_buffer(state)
+
+	# Save the redo stack
+	file.store_32(redo_stack.size())
+	for state in redo_stack:
+		file.store_32(state.size())
+		file.store_buffer(state)
+
+	file.close()
+	print("Grid data and stacks saved successfully!")
+
+func loadAutosave():
+	var autosaveLabel = $AutosaveLabel
+	var autosaveButton = $AutosaveButton
+	var autosaveCloseButton = $AutosaveCloseButton
+	autosaveLabel.visible = false
+	autosaveButton.visible = false
+	autosaveCloseButton.visible = false
+	var file = FileAccess.open("user://grid_autosave.dat", FileAccess.READ)
+	if file == null:
+		print("Failed to open file for loading!")
+		return
+
+	# Load the encoded grid data
+	var grid_size = file.get_32()
+	var encoded_data = file.get_buffer(grid_size)
+	plot_scene.clear_grid(self, plotsArray)
+	plotsArray = Plot.decode_grid(encoded_data, self)
+
+	# Load the undo stack
+	undo_stack.clear()
+	var undo_stack_size = file.get_32()
+	print("Undo stack size: ", undo_stack_size)
+	for i in range(undo_stack_size):
+		var state_size = file.get_32()
+		var state = file.get_buffer(state_size)
+		undo_stack.append(state)
+
+	# Load the redo stack
+	redo_stack.clear()
+	var redo_stack_size = file.get_32()
+	print("Redo stack size: ", redo_stack_size)
+	for i in range(redo_stack_size):
+		var state_size = file.get_32()
+		var state = file.get_buffer(state_size)
+		redo_stack.append(state)
+
+	file.close()
+	print("Grid data and stacks loaded successfully!")
+	
 	
 func save():
 	var file = FileAccess.open("user://grid_save.dat", FileAccess.WRITE)

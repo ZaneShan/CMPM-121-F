@@ -48,6 +48,30 @@ Level Complete!
 horizontal_alignment = 2
 vertical_alignment = 2
 
+[node name="AutosaveLabel" type="Label" parent="."]
+visible = false
+offset_left = 361.0
+offset_top = 120.0
+offset_right = 799.0
+offset_bottom = 143.0
+text = "Autosave Detected: Would you like to load the autosave?"
+
+[node name="AutosaveButton" type="Button" parent="."]
+visible = false
+offset_left = 435.0
+offset_top = 154.0
+offset_right = 557.0
+offset_bottom = 185.0
+text = "Load Autosave"
+
+[node name="AutosaveCloseButton" type="Button" parent="."]
+visible = false
+offset_left = 610.0
+offset_top = 154.0
+offset_right = 660.0
+offset_bottom = 185.0
+text = "Close"
+
 [connection signal="pressed" from="TurnButton" to="." method="_on_turn_button_pressed"]
 [connection signal="pressed" from="SaveButton" to="." method="_on_turn_button_pressed"]
 [connection signal="pressed" from="LoadButton" to="." method="_on_turn_button_pressed"]
