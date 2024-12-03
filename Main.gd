@@ -15,6 +15,7 @@ func _ready():
 	var cell_size = 64
 	plotsArray = plot_scene.create_grid(grid_size, cell_size, self)
 	
+	
 	var level_complete_label = $LevelCompleteLabel
 	level_complete_label.visible = false
 	
@@ -71,6 +72,8 @@ func _ready():
 	# Set the player's starting position to the top-left corner of the plots
 	if grid_size > 0:
 		player.position = plotsArray[0][0].position  # Position matches the top-left plot
+	
+	encode_current_grid() # Save start of the game to undo stack
 
 # Turn update button callback
 # Turn update button callback
@@ -83,6 +86,12 @@ func _on_turn_complete():
 	encode_current_grid()
 	check_level_complete()
 	autosave()
+	var autosaveLabel = $AutosaveLabel
+	var autosaveButton = $AutosaveButton
+	var autosaveCloseButton = $AutosaveCloseButton
+	autosaveLabel.visible = false
+	autosaveButton.visible = false
+	autosaveCloseButton.visible = false
 
 func closeAutosave():
 	var autosaveLabel = $AutosaveLabel
@@ -170,6 +179,7 @@ func loadAutosave():
 
 	file.close()
 	print("Grid data and stacks loaded successfully!")
+	check_level_complete()
 	
 	
 func save(fileName: String):
@@ -230,6 +240,7 @@ func load(fileName: String):
 
 	file.close()
 	print("Grid data and stacks loaded successfully!")
+	check_level_complete()
 
 	
 # Undo the last action
