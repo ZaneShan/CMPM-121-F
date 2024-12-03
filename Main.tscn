@@ -6,44 +6,48 @@
 script = ExtResource("1_dilqc")
 
 [node name="TurnButton" type="Button" parent="."]
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = 215.0
+offset_right = 301.0
+offset_bottom = 31.0
 text = "Next Turn"
 
 [node name="SaveButton" type="Button" parent="."]
-offset_top = 100.0
-offset_right = 86.0
-offset_bottom = 131.0
+offset_left = 1.0
+offset_top = -1.0
+offset_right = 87.0
+offset_bottom = 30.0
 text = "Save"
 
 [node name="SaveButton2" type="Button" parent="."]
-offset_top = 150.0
+offset_top = 40.0
 offset_right = 86.0
-offset_bottom = 181.0
+offset_bottom = 71.0
 text = "Save 2"
 
 [node name="SaveButton3" type="Button" parent="."]
-offset_top = 200.0
+offset_top = 88.0
 offset_right = 86.0
-offset_bottom = 231.0
+offset_bottom = 119.0
 text = "Save 3"
 
 [node name="LoadButton" type="Button" parent="."]
-offset_top = 250.0
-offset_right = 86.0
-offset_bottom = 281.0
+offset_left = 105.0
+offset_right = 191.0
+offset_bottom = 31.0
 text = "Load"
 
 [node name="LoadButton2" type="Button" parent="."]
-offset_top = 300.0
-offset_right = 86.0
-offset_bottom = 331.0
+offset_left = 104.0
+offset_top = 41.0
+offset_right = 190.0
+offset_bottom = 72.0
 text = "Load 2"
 
 [node name="LoadButton3" type="Button" parent="."]
-offset_top = 350.0
-offset_right = 86.0
-offset_bottom = 381.0
+offset_left = 102.0
+offset_top = 86.0
+offset_right = 188.0
+offset_bottom = 117.0
 text = "Load 3"
 
 [node name="UndoButton" type="Button" parent="."]
