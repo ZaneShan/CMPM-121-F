@@ -1,91 +1,123 @@
-extends Node2D
-class_name Plant
-var growth_level = 0
-var max_growth_level = 2
-var current_plot = null
-@export var sun_req = 1.0
-@export var water_req = 1.0
+using Godot;
+using System.Collections.Generic;
 
-# References to the plant stage sprites
-var plant_stage_1 = null
-var plant_stage_2 = null
-var plant_stage_3 = null
-
-@export var is_lettuce = false
-@export var is_carrot = false
-@export var is_tomato = false
-
-func _ready():
-	# Get references to the child Sprite nodes for each growth stage
-	plant_stage_1 = $plant_stage_1
-	plant_stage_2 = $plant_stage_2
-	plant_stage_3 = $plant_stage_3
-	plant_stage_1.visible = true
-	plant_stage_2.visible = false
-	plant_stage_3.visible = false
+public partial class Plant : Node2D
+{
+	public int GrowthLevel { get; private set; } = 0;
+	public int MaxGrowthLevel { get; private set; } = 2;
+	public Plot CurrentPlot { get; set; }
 	
-	# Set the initial visibility
-	update_plant_growth()
+	[Export] public float SunReq { get; set; } = 1.0f;
+	[Export] public float WaterReq { get; set; } = 1.0f;
 	
+	// Plant type flags
+	[Export] public bool IsLettuce { get; set; } = false;
+	[Export] public bool IsCarrot { get; set; } = false;
+	[Export] public bool IsTomato { get; set; } = false;
 
-func update_plant(plant, plot):
-	# Check if plant meets growth requirements
-	if plot.sun_level >= plant.sun_req and plot.water_level >= plant.water_req:
-		if (growth_level < max_growth_level):
-			if (plant.grow() == true):
-				growth_level += 1
-				update_plant_growth()
-	print ("plant growth level: ", plant.growth_level)
-	
+	// References to the plant stage sprites
+	private Sprite2D plantStage1;
+	private Sprite2D plantStage2;
+	private Sprite2D plantStage3;
 
-func grow() -> bool:
-	# conditionals dependent on plant type
-	if (is_lettuce):
-		# lettuce can only grow near other lettuce
-		if(!CheckIfNear("Lettuce", current_plot)):
-			return false
-	if (is_tomato):
-		# tomato can only grow when alone, having any plants adjacent prohibits growth
-		if(CheckIfNear("Lettuce", current_plot)):
-			return false
-		if(CheckIfNear("Carrot", current_plot)):
-			return false
-		if(CheckIfNear("Tomato", current_plot)):
-			return false
-	if (is_carrot):
-		# carrots can only grow near other types other than themselves, or by themselves
-		if(CheckIfNear("Carrot", current_plot)):
-			return false
-	return true
+	public override void _Ready()
+	{
+		// Get references to the child Sprite nodes for each growth stage
+		plantStage1 = GetNode<Sprite2D>("plant_stage_1");
+		plantStage2 = GetNode<Sprite2D>("plant_stage_2");
+		plantStage3 = GetNode<Sprite2D>("plant_stage_3");
+		plantStage1.Visible = true;
+		plantStage2.Visible = false;
+		plantStage3.Visible = false;
 
-# Checks if the plant is fully grown
-func is_fully_grown() -> bool:
-	return growth_level == max_growth_level
+		// Set the initial visibility
+		UpdatePlantGrowth();
+	}
 
-func update_plant_growth():
-	plant_stage_1.visible = growth_level == 0
-	plant_stage_2.visible = growth_level == 1
-	plant_stage_3.visible = growth_level == 2
-	
-func CheckIfNear(plant_type: String, currentPlot) -> bool:
-	if currentPlot == null:
-		print("Error: currentPlot is null!")
-		return false
-		
-	var nearby_plots = currentPlot.get_adjacent_plots()
-	
-	# Check each adjacent plot for a plant of the given type
-	for plot in nearby_plots:
-		if plot.has_plant():
-			var plant = plot.get_plant()
-			
-			# Check if the plant type matches
-			if plant_type == "Carrot" and plant.is_carrot:
-				return true
-			elif plant_type == "Lettuce" and plant.is_lettuce:
-				return true
-			elif plant_type == "Tomato" and plant.is_tomato:
-				return true
-	
-	# If no matching plants were found
-	return false
+	public void UpdatePlant(Plant plant, Plot plot)
+	{
+		// Check if the plant meets growth requirements
+		if (plot.SunLevel >= plant.SunReq && plot.WaterLevel >= plant.WaterReq)
+		{
+			if (GrowthLevel < MaxGrowthLevel)
+			{
+				if (plant.Grow())
+				{
+					GrowthLevel++;
+					UpdatePlantGrowth();
+				}
+			}
+		}
+		GD.Print("Plant growth level: ", GrowthLevel);
+	}
+
+	public bool Grow()
+	{
+		// Conditional growth logic based on plant type
+		if (IsLettuce)
+		{
+			// Lettuce can only grow near other lettuce
+			if (!CheckIfNear("Lettuce", CurrentPlot))
+				return false;
+		}
+		else if (IsTomato)
+		{
+			// Tomato can only grow when alone, having any plants adjacent prohibits growth
+			if (CheckIfNear("Lettuce", CurrentPlot) ||
+				CheckIfNear("Carrot", CurrentPlot) ||
+				CheckIfNear("Tomato", CurrentPlot))
+				return false;
+		}
+		else if (IsCarrot)
+		{
+			// Carrots can only grow near other types (not themselves), or by themselves
+			if (CheckIfNear("Carrot", CurrentPlot))
+				return false;
+		}
+		return true;
+	}
+
+	// Checks if the plant is fully grown
+	public bool IsFullyGrown()
+	{
+		return GrowthLevel == MaxGrowthLevel;
+	}
+
+	private void UpdatePlantGrowth()
+	{
+		plantStage1.Visible = GrowthLevel == 0;
+		plantStage2.Visible = GrowthLevel == 1;
+		plantStage3.Visible = GrowthLevel == 2;
+	}
+
+	private bool CheckIfNear(string plantType, Plot currentPlot)
+	{
+		if (currentPlot == null)
+		{
+			GD.PrintErr("Error: currentPlot is null!");
+			return false;
+		}
+
+		List<Plot> nearbyPlots = currentPlot.GetAdjacentPlots();
+
+		// Check each adjacent plot for a plant of the given type
+		foreach (var plot in nearbyPlots)
+		{
+			if (plot.HasPlant())
+			{
+				var plant = plot.GetPlant();
+
+				// Check if the plant type matches
+				if (plantType == "Carrot" && plant.IsCarrot)
+					return true;
+				else if (plantType == "Lettuce" && plant.IsLettuce)
+					return true;
+				else if (plantType == "Tomato" && plant.IsTomato)
+					return true;
+			}
+		}
+
+		// If no matching plants were found
+		return false;
+	}
+}
