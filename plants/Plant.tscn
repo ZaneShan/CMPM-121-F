@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dnw6vlgcwk5dm"]
 
-[ext_resource type="Script" path="res://plants/Plant.gd" id="1_738ou"]
+[ext_resource type="Script" path="res://plants/Plant.cs" id="1_738ou"]
 [ext_resource type="Texture2D" uid="uid://bf3bd6r7yx7uf" path="res://Sprites/Carrot1-Alpha-Testing.svg" id="2_pewmg"]
 [ext_resource type="Texture2D" uid="uid://csuxl5efh7a3v" path="res://Sprites/Carrot2-Alpha-Testing.svg" id="3_01kbr"]
 [ext_resource type="Texture2D" uid="uid://cy3tg77w3trkj" path="res://Sprites/Carrot3-Alpha-Testing.svg" id="4_1de5l"]
