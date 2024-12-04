@@ -10,7 +10,7 @@ public partial class Plot : Node2D
 	private Vector2 _sunLevelRange = new Vector2(5, 10); // Random sun level range for each turn
 	private Vector2 _waterChangeRange = new Vector2(-2, 2); // Random water change range for each turn
 
-	public Node2D Plant { get; private set; } = null; // Optional plant object
+	public Plant Plant { get; private set; } = null; // Optional plant object
 	public Node2D Player { get; private set; } = null; // Reference to the player on this plot
 	public Vector2 Coordinates { get; set; }
 
@@ -23,9 +23,14 @@ public partial class Plot : Node2D
 	public bool HasPlant() => Plant != null;
 
 	// Sets the plant in the plot
-	public void SetPlant(Node2D newPlant)
+	public void SetPlant(Plant newPlant)
 	{
 		Plant = newPlant;
+	}
+	
+	public Plant GetPlant()
+	{
+		return Plant;
 	}
 
 	// Removes the plant from the plot
@@ -50,8 +55,8 @@ public partial class Plot : Node2D
 	public void UpdatePlot(Plot plot)
 	{
 		// Randomize sun and water levels
-		plot.SunLevel = GD.RandRange(_sunLevelRange.X, _sunLevelRange.Y);
-		plot.WaterLevel += GD.RandRange(_waterChangeRange.X, _waterChangeRange.Y);
+		plot.SunLevel = (float)GD.RandRange(_sunLevelRange.X, _sunLevelRange.Y);
+		plot.WaterLevel += (float)GD.RandRange(_waterChangeRange.X, _waterChangeRange.Y);
 
 		// Clamp water level to reasonable bounds
 		plot.WaterLevel = Mathf.Clamp(plot.WaterLevel, 0, 20);
