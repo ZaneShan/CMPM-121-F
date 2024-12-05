@@ -1,123 +1,73 @@
 extends Node2D
 class_name Plant
 
+enum PlantType { LETTUCE, TOMATO, CARROT }
+
 var growth_level = 0
 var max_growth_level = 2
-var current_plot = null
+var current_plot = null  # The plot this plant is currently on
 
-# Requirements and conditions can be different for each plant
-var growth_conditions = {}  # Conditions that will define how a plant grows
-@export var sun_req = 1.0
-@export var water_req = 1.0
+# Growth rule assigned dynamically based on type
+var growth_rule: GrowthRule
+@export var type: PlantType
 
-# Plant type flags
-@export var is_lettuce = false
-@export var is_carrot = false
-@export var is_tomato = false
+# Base class for growth rules
+class GrowthRule:
+	func can_grow(plant, plot) -> bool:
+		return false
 
-# References to the plant stage sprites
-var plant_stage_1 = null
-var plant_stage_2 = null
-var plant_stage_3 = null
+# Specific growth rules
+class LettuceGrowthRule extends GrowthRule:
+	func can_grow(plant, plot) -> bool:
+		return plot.get_adjacent_plots().any(
+			func(adjacent) -> bool:
+				return adjacent.has_plant() and adjacent.get_plant().type == PlantType.LETTUCE
+		)
 
+class TomatoGrowthRule extends GrowthRule:
+	func can_grow(plant, plot) -> bool:
+		return not plot.get_adjacent_plots().any(
+			func(adjacent) -> bool:
+				return adjacent.has_plant()
+		)
+
+class CarrotGrowthRule extends GrowthRule:
+	func can_grow(plant, plot) -> bool:
+		return not plot.get_adjacent_plots().any(
+			func(adjacent) -> bool:
+				return adjacent.has_plant() and adjacent.get_plant().type == PlantType.CARROT
+		)
+
+# Main plant functionality
 func _ready():
-	# Get references to the child Sprite nodes for each growth stage
-	plant_stage_1 = $plant_stage_1
-	plant_stage_2 = $plant_stage_2
-	plant_stage_3 = $plant_stage_3
-	plant_stage_1.visible = true
-	plant_stage_2.visible = false
-	plant_stage_3.visible = false
-	
-	# Set the initial visibility
-	update_plant_growth()
-
-	# Initialize plant growth conditions based on type
-	set_growth_conditions()
+	assign_growth_rule()
+	update_visuals()
 
 
-# Set the plant's growth conditions based on the type
-func set_growth_conditions():
-	if is_lettuce:
-		growth_conditions = {
-			"neighbors": "lettuce",
-			"water_range": [2, 4],
-			"sun_range": [5, 8]
-		}
-	elif is_carrot:
-		growth_conditions = {
-			"neighbors": "none",
-			"water_range": [3, 5],
-			"sun_range": [4, 7]
-		}
-	elif is_tomato:
-		growth_conditions = {
-			"neighbors": "other_types",
-			"water_range": [4, 6],
-			"sun_range": [6, 9]
-		}
+func assign_growth_rule():
+	var plant_growth_rules = {
+		PlantType.LETTUCE: LettuceGrowthRule.new(),
+		PlantType.TOMATO: TomatoGrowthRule.new(),
+		PlantType.CARROT: CarrotGrowthRule.new()
+	}
+	growth_rule = plant_growth_rules.get(type)
 
-# Update the plant growth level
-func update_plant(plant, plot):
-	if plot.sun_level >= plant.sun_req and plot.water_level >= plant.water_req:
+func grow(plot) -> bool:
+	if growth_rule and growth_rule.can_grow(self, plot):
 		if growth_level < max_growth_level:
-			if grow():
-				growth_level += 1
-				update_plant_growth()
-	print("plant growth level: ", growth_level)
+			growth_level += 1
+			update_visuals()
+			return true
+	return false
 
-# Check if the plant can grow based on its conditions
-func grow() -> bool:
-	if growth_conditions.has("neighbors"):
-		var neighbors_ok = check_neighbors(growth_conditions["neighbors"])
-		if !neighbors_ok:
-			return false
-	if growth_conditions.has("water_range"):
-		if !(current_plot.water_level in growth_conditions["water_range"]):
-			return false
-	if growth_conditions.has("sun_range"):
-		if !(current_plot.sun_level in growth_conditions["sun_range"]):
-			return false
-	return true
+func update_visuals():
+	match growth_level:
+		0:
+			print("Plant of type %s is at initial growth stage." % [str(type)])
+		1:
+			print("Plant of type %s grew to stage 1." % [str(type)])
+		2:
+			print("Plant of type %s grew to its final stage." % [str(type)])
 
-# Check if neighbors are suitable for growth
-func check_neighbors(neighbor_condition: String) -> bool:
-	if neighbor_condition == "lettuce":
-		return CheckIfNear("Lettuce", current_plot)
-	elif neighbor_condition == "none":
-		return !CheckIfNear("Lettuce", current_plot) && !CheckIfNear("Carrot", current_plot) && !CheckIfNear("Tomato", current_plot)
-	elif neighbor_condition == "other_types":
-		# Can grow next to anything except its own type
-		if CheckIfNear("Lettuce", current_plot) or CheckIfNear("Carrot", current_plot) or CheckIfNear("Tomato", current_plot):
-			return false
-	return true
-
-# Checks if the plant is fully grown
 func is_fully_grown() -> bool:
 	return growth_level == max_growth_level
-
-# Update the plant sprite visibility based on growth level
-func update_plant_growth():
-	plant_stage_1.visible = growth_level == 0
-	plant_stage_2.visible = growth_level == 1
-	plant_stage_3.visible = growth_level == 2
-
-# Check if the plant is near a plant of a specific type
-func CheckIfNear(plant_type: String, currentPlot) -> bool:
-	if currentPlot == null:
-		print("Error: currentPlot is null!")
-		return false
-		
-	var nearby_plots = currentPlot.get_adjacent_plots()
-	
-	for plot in nearby_plots:
-		if plot.has_plant():
-			var plant = plot.get_plant()
-			if plant_type == "Carrot" and plant.is_carrot:
-				return true
-			elif plant_type == "Lettuce" and plant.is_lettuce:
-				return true
-			elif plant_type == "Tomato" and plant.is_tomato:
-				return true
-	
-	return false
