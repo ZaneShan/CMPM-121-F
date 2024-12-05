@@ -1,0 +1,15 @@
+scenario_name: "Randomized Growth"
+starting_conditions:
+  grid_size:
+	width: 5
+	height: 5
+  plot_attributes:
+	sun_level_range:
+	  min: 1
+	  max: 10
+	water_level_range:
+	  min: 1
+	  max: 10
+
+victory_conditions:
+  plants_to_grow: 5
