@@ -81,7 +81,27 @@ public partial class Plant : Node2D
 	{
 		growthRules.Add(rule);
 	}
+	public void AddDefaultGrowthRules()
+	{
+		switch (Type)
+		{
+			case PlantType.Lettuce:
+				AddGrowthRule(new LettuceGrowthRule()); // Lettuce unique logic
+				break;
 
+			case PlantType.Tomato:
+				AddGrowthRule(new TomatoGrowthRule()); // Tomato unique logic
+				break;
+
+			case PlantType.Carrot:
+				AddGrowthRule(new CarrotGrowthRule()); // Carrot unique logic
+				break;
+
+			default:
+				GD.Print($"Default plant type: No specific growth rules assigned for {Type}");
+				break;
+		}
+	}
 	// Determines whether the plant meets all growth criteria
 	public bool CanGrow()
 	{

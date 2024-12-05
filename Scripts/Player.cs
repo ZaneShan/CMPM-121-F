@@ -110,6 +110,7 @@ public partial class Player : Area2D
 		// Instantiate the plant and assign its type
 		var plantInstance = packedScene.Instantiate<Plant>();
 		plantInstance.Type = plantType;
+		 plantInstance.AddDefaultGrowthRules();
 		plantInstance.CurrentPlot = CurrentPlot;
 
 		// Add the plant to the plot
