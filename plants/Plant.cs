@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public partial class Plant : Node2D
 {
-	public int GrowthLevel { get; private set; } = 0;
-	public int MaxGrowthLevel { get; private set; } = 2;
+	public int GrowthLevel { get; set; } = 0;
+	public int MaxGrowthLevel { get; set; } = 2;
 	public Plot CurrentPlot { get; set; }
 	
 	[Export] public float SunReq { get; set; } = 1.0f;

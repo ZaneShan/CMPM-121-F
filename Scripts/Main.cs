@@ -125,7 +125,7 @@ public partial class Main : Node2D
 
 		// Save grid state
 		var encodedData = Plot.EncodeGrid(plotsArray, this);
-		file.Store32(encodedData.Length);
+		file.Store32((uint)encodedData.Length);
 		file.StoreBuffer(encodedData);
 
 		// Save undo stack

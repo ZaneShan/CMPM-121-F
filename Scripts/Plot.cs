@@ -174,17 +174,16 @@ public partial class Plot : Node2D
 		return player;
 	}
 
-	// Encoding the grid data into a PackedByteArray
-	public static PackedByteArray EncodeGrid(List<List<Plot>> grid, Node2D parentNode)
+	// Encoding the grid data into a byte array
+	public static byte[] EncodeGrid(List<List<Plot>> grid, Node2D parentNode)
 	{
-		var byteArray = new PackedByteArray();
+		var byteArray = new List<byte>();
 
 		// Encode the grid size and cell size
 		var gridSize = grid.Count; // Assuming square grid (size x size)
 		var cellSize = 64;
-		byteArray.Append((byte)gridSize);  // Encode the grid size (as an integer)
-		byteArray.Append((byte)cellSize);  // Encode the cell size (as an integer)
-		var offset = byteArray.Size;  // The offset starts after the grid and cell size
+		byteArray.Add((byte)gridSize);  // Encode the grid size (as an integer)
+		byteArray.Add((byte)cellSize);  // Encode the cell size (as an integer)
 
 		// Iterate through the grid and encode the plot data
 		foreach (var row in grid)
@@ -192,47 +191,49 @@ public partial class Plot : Node2D
 			foreach (var plot in row)
 			{
 				// Encode plot data (sun level, water level, etc.)
-				var floatByteArray = new PackedByteArray(new byte[] { 0, 0, 0, 0 });
-				floatByteArray.EncodeFloat(0, plot.SunLevel);
-				byteArray.AppendArray(floatByteArray);
-				floatByteArray.EncodeFloat(0, plot.WaterLevel);
-				byteArray.AppendArray(floatByteArray);
+				byte[] floatByteArray = BitConverter.GetBytes(plot.SunLevel);
+				byteArray.AddRange(floatByteArray);
+				floatByteArray = BitConverter.GetBytes(plot.WaterLevel);
+				byteArray.AddRange(floatByteArray);
 
 				// Encode player presence
-				byteArray.Append(plot.Player != null ? (byte)1 : (byte)0);  // Player present
+				byteArray.Add(plot.Player != null ? (byte)1 : (byte)0);  // Player present
 
 				// Encode plant data
 				if (plot.HasPlant())
 				{
-					byteArray.Append((byte)1);  // Plant present
-					byteArray.Append(plot.GetPlant().GrowthLevel);  // Growth level
+					byteArray.Add((byte)1);  // Plant present
+					byteArray.Add((byte)plot.GetPlant().GrowthLevel);  // Growth level
 
 					// Encode sun and water requirements as floats
-					floatByteArray.EncodeFloat(0, plot.GetPlant().SunLevel);
-					byteArray.AppendArray(floatByteArray);
-					floatByteArray.EncodeFloat(0, plot.GetPlant().WaterLevel);
-					byteArray.AppendArray(floatByteArray);
-					byteArray.Append(GetPlantTypeFlag(plot.GetPlant()));  // Plant type flag
+					floatByteArray = BitConverter.GetBytes(plot.GetPlant().SunReq);
+					byteArray.AddRange(floatByteArray);
+					floatByteArray = BitConverter.GetBytes(plot.GetPlant().WaterReq);
+					byteArray.AddRange(floatByteArray);
+					byteArray.Add(GetPlantTypeFlag(plot.GetPlant()));  // Plant type flag
 				}
 				else
 				{
-					byteArray.Append((byte)0);  // No plant
+					byteArray.Add((byte)0);  // No plant
 				}
 			}
 		}
 
-		return byteArray;
+		return byteArray.ToArray();
 	}
 
-	// Decoding the grid data from a PackedByteArray
-	public static List<List<Plot>> DecodeGrid(PackedByteArray byteArray, Node2D parentNode)
+	// Decoding the grid data from a byte array
+	public static List<List<Plot>> DecodeGrid(byte[] byteArray, Node2D parentNode)
 	{
-		int gridSize = byteArray[0];  // The first byte contains the grid size
-		int cellSize = byteArray[1];  // The second byte contains the cell size
+		int offset = 0;
+
+		int gridSize = byteArray[offset];  // The first byte contains the grid size
+		offset++;
+		int cellSize = byteArray[offset];  // The second byte contains the cell size
+		offset++;
+
 		var grid = CreateGrid(gridSize, cellSize, parentNode);  // Create the grid using the size and cell size
 
-		// Decode the grid data
-		int offset = 2;
 		bool playerFound = false;
 		int playerX = 0;
 		int playerY = 0;
@@ -244,14 +245,14 @@ public partial class Plot : Node2D
 				var plot = grid[x][y];
 
 				// Decode plot data
-				plot.SunLevel = BytesToFloat(byteArray, offset);
+				plot.SunLevel = BitConverter.ToSingle(byteArray, offset);
 				offset += 4;
-				plot.WaterLevel = BytesToFloat(byteArray, offset);
+				plot.WaterLevel = BitConverter.ToSingle(byteArray, offset);
 				offset += 4;
 
 				// Decode player presence
 				byte playerFlag = byteArray[offset];
-				offset += 1;
+				offset++;
 				if (playerFlag == 1)
 				{
 					if (playerFound)
@@ -280,27 +281,27 @@ public partial class Plot : Node2D
 				{
 					int growthLevel = byteArray[offset];
 					offset += 1;
-					float sunReq = BytesToFloat(byteArray, offset);
+					float sunReq = BitConverter.ToSingle(byteArray, offset);
 					offset += 4;
-					float waterReq = BytesToFloat(byteArray, offset);
+					float waterReq = BitConverter.ToSingle(byteArray, offset);
 					offset += 4;
 					int plantTypeFlag = byteArray[offset];
 					offset += 1;
 
-					Node2D plant = null;
+					Plant plant = null;
 
 					// Instantiate the appropriate plant type
 					if ((plantTypeFlag & 1) != 0)  // Lettuce
 					{
-						plant = GD.Load<PackedScene>("res://plants/Lettuce.tscn").Instantiate();
+						plant = GD.Load<PackedScene>("res://plants/Lettuce.tscn").Instantiate() as Plant;
 					}
 					else if ((plantTypeFlag & 2) != 0)  // Carrot
 					{
-						plant = GD.Load<PackedScene>("res://plants/Carrot.tscn").Instantiate();
+						plant = GD.Load<PackedScene>("res://plants/Carrot.tscn").Instantiate() as Plant;
 					}
 					else if ((plantTypeFlag & 4) != 0)  // Tomato
 					{
-						plant = GD.Load<PackedScene>("res://plants/Tomato.tscn").Instantiate();
+						plant = GD.Load<PackedScene>("res://plants/Tomato.tscn").Instantiate() as Plant;
 					}
 					else
 					{
@@ -310,8 +311,8 @@ public partial class Plot : Node2D
 
 					// Set common plant properties
 					(plant as Plant).GrowthLevel = growthLevel;
-					(plant as Plant).SunLevel = sunReq;
-					(plant as Plant).WaterLevel = waterReq;
+					(plant as Plant).SunReq = sunReq;
+					(plant as Plant).WaterReq = waterReq;
 
 					plot.SetPlant(plant);  // Assign the plant to the plot
 				}
@@ -322,7 +323,6 @@ public partial class Plot : Node2D
 			}
 		}
 
-		// Error handling for missing player
 		if (!playerFound)
 		{
 			GD.PrintErr("Error: No player found in the grid!");
@@ -340,16 +340,8 @@ public partial class Plot : Node2D
 		return grid;
 	}
 
-	// Helper method to convert bytes to float
-	private static float BytesToFloat(PackedByteArray byteArray, int offset)
-	{
-		var slice = byteArray.Slice(offset, offset + 4);
-		var buffer = new PackedByteArray(slice);
-		return buffer.DecodeFloat(0);  // Interpret the 4 bytes as a float32
-	}
-
 	// Helper method to get plant type flag
-	private static int GetPlantTypeFlag(Plant plant)
+	private static byte GetPlantTypeFlag(Plant plant)
 	{
 		if (plant.IsLettuce) return 1;
 		if (plant.IsCarrot) return 2;
