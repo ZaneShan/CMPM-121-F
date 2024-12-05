@@ -5,7 +5,7 @@ using System.Linq;
 public partial class Main : Node2D
 {
 	private int gridSize = 3;
-	private List<List<Plot>> plotsArray = new List<List<Plot>>();
+	List<List<Plot>> plotsArray = new List<List<Plot>>();
 	
 	private PackedScene plotScene = GD.Load<PackedScene>("res://Plot.gd");
 	
@@ -50,9 +50,7 @@ public partial class Main : Node2D
 
 		// Add the player
 		var player = GD.Load<PackedScene>("res://Player.tscn").Instantiate<Player>();
-		player.Plots = plotsArray
-			.Select(innerList => innerList.Cast<Node>().ToList())
-			.ToList();
+		player.Plots = plotsArray;
 		player.GridSize = gridSize;
 		AddChild(player);
 

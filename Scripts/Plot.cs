@@ -64,7 +64,7 @@ public partial class Plot : Node2D
 		// Update the plant in the plot, if any
 		if (plot.HasPlant() && plot.Plant is Plant plant)
 		{
-			plant.UpdatePlant(plant, plot);
+			plant.Grow();
 		}
 	}
 
@@ -342,9 +342,9 @@ public partial class Plot : Node2D
 	// Helper method to get plant type flag
 	private static byte GetPlantTypeFlag(Plant plant)
 	{
-		if (plant.IsLettuce) return 1;
-		if (plant.IsCarrot) return 2;
-		if (plant.IsTomato) return 4;
+		if ( plant.Type == PlantType.Lettuce) return 1;
+		if (plant.Type == PlantType.Carrot) return 2;
+		if (plant.Type == PlantType.Tomato) return 4;
 		return 0;
 	}
 }
