@@ -3,9 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://dnw6vlgcwk5dm" path="res://plants/Plant.tscn" id="1_wm1uy"]
 
 [node name="Plant" instance=ExtResource("1_wm1uy")]
-sun_req = 7.0
-water_req = 3.0
-is_carrot = true
 
 [node name="plant_stage_1" parent="." index="0"]
 scale = Vector2(0.5, 0.5)

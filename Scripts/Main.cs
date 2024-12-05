@@ -239,6 +239,9 @@ public partial class Main : Node2D
 	{
 		var encodedData = Plot.EncodeGrid(plotsArray, this);
 		undoStack.Add(encodedData);
+		
+		GD.Print("Encoded ByteArray: ", string.Join(", ", encodedData));
+		GD.Print("UndoStack length: ", undoStack.Count);
 		redoStack.Clear(); // Clear redo stack when a new action occurs
 		GD.Print("Current grid state encoded and pushed to undo stack.");
 	}

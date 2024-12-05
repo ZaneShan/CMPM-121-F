@@ -42,9 +42,10 @@ public partial class Plot : Node2D
 	}
 
 	// Sets the player in the plot
-	public void SetPlayer(Node2D newPlayer)
+	public void SetPlayer(Area2D newPlayer)
 	{
 		Player = newPlayer;
+		GD.Print("setPlayer: ", Player);
 	}
 
 	// Removes the player from the plot
@@ -218,8 +219,9 @@ public partial class Plot : Node2D
 					byteArray.Add((byte)0);  // No plant
 				}
 			}
-		}
 
+		}
+		// GD.Print("Encoded ByteArray: ", string.Join(", ", byteArray.ToArray()));
 		return byteArray.ToArray();
 	}
 
@@ -235,7 +237,7 @@ public partial class Plot : Node2D
 
 		var grid = CreateGrid(gridSize, cellSize, parentNode);  // Create the grid using the size and cell size
 
-		bool playerFound = false;
+		Area2D player = null;  // Reference to the player instance
 		int playerX = 0;
 		int playerY = 0;
 
@@ -256,16 +258,15 @@ public partial class Plot : Node2D
 				offset++;
 				if (playerFlag == 1)
 				{
-					if (playerFound)
+					if (player != null)
 					{
 						GD.Print("Warning: Multiple plots have a player! Fixing data...");
 						plot.Player = null;  // Reset extra player flags
 					}
 					else
 					{
-						var player = (Node2D)_playerScene.Instantiate();
+						player = (Area2D)_playerScene.Instantiate();  // Instantiate the player
 						plot.Player = player;
-						playerFound = true;
 						playerX = x;
 						playerY = y;
 					}
@@ -292,17 +293,17 @@ public partial class Plot : Node2D
 					Plant plant = null;
 
 					// Instantiate the appropriate plant type
-					if ((plantTypeFlag & 1) != 0)  // Lettuce
+					if (plantTypeFlag == 1)  // Lettuce
 					{
-						plant = GD.Load<PackedScene>("res://plants/Lettuce.tscn").Instantiate() as Plant;
+						plant = GD.Load<PackedScene>("res://plants/Lettuce.tscn").Instantiate<Plant>();
 					}
-					else if ((plantTypeFlag & 2) != 0)  // Carrot
+					else if (plantTypeFlag == 2)  // Carrot
 					{
-						plant = GD.Load<PackedScene>("res://plants/Carrot.tscn").Instantiate() as Plant;
+						plant = GD.Load<PackedScene>("res://plants/Carrot.tscn").Instantiate<Plant>();
 					}
-					else if ((plantTypeFlag & 4) != 0)  // Tomato
+					else if (plantTypeFlag == 4)  // Tomato
 					{
-						plant = GD.Load<PackedScene>("res://plants/Tomato.tscn").Instantiate() as Plant;
+						plant = GD.Load<PackedScene>("res://plants/Tomato.tscn").Instantiate<Plant>();
 					}
 					else
 					{
@@ -316,6 +317,7 @@ public partial class Plot : Node2D
 					(plant as Plant).WaterReq = waterReq;
 
 					plot.SetPlant(plant);  // Assign the plant to the plot
+					plot.AddChild(plant);
 				}
 				else
 				{
@@ -324,22 +326,23 @@ public partial class Plot : Node2D
 			}
 		}
 
-		if (!playerFound)
+		// Handle player placement
+		if (player == null)
 		{
 			GD.PrintErr("Error: No player found in the grid!");
 		}
-
-		// Place player
-		if (playerFound)
+		else
+		
 		{
-			var player = (Node2D)_playerScene.Instantiate();
 			player.GlobalPosition = grid[playerX][playerY].GlobalPosition;
 			parentNode.AddChild(player);
 			player.Name = "Player";
+			GD.Print("Player global position: ", player.GlobalPosition);
 		}
 
 		return grid;
 	}
+
 
 	// Helper method to get plant type flag
 	private static byte GetPlantTypeFlag(Plant plant)
