@@ -1,0 +1,18 @@
+key,es,it,fr,en
+Turn Complete,Turno Completo,Turno Completo,Turno Completo,Turn Complete
+Save Slot 1,Guardar en la Ranura 1,Salva Slot 1,Enregistrer l'Emplacement 1,Save Slot 1
+Save Slot 2,Guardar en la Ranura 2,Salva Slot 2,Enregistrer l'Emplacement 2,Save Slot 2
+Save Slot 3,Guardar en la Ranura 2,Salva Slot 2,Enregistrer l'Emplacement 2,Save Slot 3
+Load Slot 1,Carica Slot 1,Cargar Ranura 1,Charger l'Emplacement 1,Load Slot 1
+Load Slot 2,Carica Slot 2,Cargar Ranura 2,Charger l'Emplacement 2,Load Slot 2
+Load Slot 3,Carica Slot 3,Cargar Ranura 3,Charger l'Emplacement 3,Load Slot 3
+Undo,Annulla,Deshacer,Annuler,Undo
+Redo,Ripristina,Rehacer,Refaire,Redo
+Load Autosave,Carica Salvataggio Automatico,Cargar Guardado Automático,Charger la Sauvegarde Automatique,Load Autosave
+Close,Chiudi,Cerrar,Fermer,Close
+Autosave detected. Would you like to load it?,Salvataggio automatico rilevato. Vuoi caricarlo?,Se detectó un guardado automático. ¿Quieres cargarlo?,Sauvegarde automatique détectée. Voulez-vous la charger ?,Autosave detected. Would you like to load it?
+Level Complete!,Livello Completato!,¡Nivel Completado!,Niveau Terminé !,Level Complete!
+English,Inglés,Inglese,Anglais,English
+Spanish,Español,Spagnolo,Espagnol,Spanish
+Italian,Italiano,Italiano,Italien,Italian
+French,Francés,Francese,Français,French

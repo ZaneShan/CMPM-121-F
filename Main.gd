@@ -76,6 +76,21 @@ func _ready():
 	
 	var autosaveClose_button = $AutosaveCloseButton
 	autosaveClose_button.connect("pressed", Callable(self, "hideAutosavePrompt"))
+	
+	var italian_button = $ItalianButton
+	italian_button.connect("pressed", Callable(self, "change_language").bind("it"))
+	
+	var spanish_button = $SpanishButton
+	spanish_button.connect("pressed", Callable(self, "change_language").bind("es"))
+	
+	var french_button = $FrenchButton
+	french_button.connect("pressed", Callable(self, "change_language").bind("fr"))
+	
+	var english_button = $EnglishButton
+	english_button.connect("pressed", Callable(self, "change_language").bind("en"))
+	
+	# Set the default language
+	change_language("en")
 
 	# Add the player
 	var player = preload("res://Player.tscn").instantiate()
@@ -310,3 +325,44 @@ func check_level_complete():
 		level_complete_label.visible = true
 	else:
 		level_complete_label.visible = false
+		
+func change_language(language_code: String):
+	# Set the current locale
+	TranslationServer.set_locale(language_code)
+	
+	# Update text for all UI elements
+	var turn_button = $TurnButton
+	turn_button.text = tr("Turn Complete")
+	var save_button = $SaveButton
+	save_button.text = tr("Save Slot 1")
+	var save_button2 = $SaveButton2
+	save_button2.text = tr("Save Slot 2")
+	var save_button3 = $SaveButton3
+	save_button3.text = tr("Save Slot 3")
+	var load_button = $LoadButton
+	load_button.text = tr("Load Slot 1")
+	var load_button2 = $LoadButton2
+	load_button2.text = tr("Load Slot 2")
+	var load_button3 = $LoadButton3
+	load_button3.text = tr("Load Slot 3")
+	var undo_button = $UndoButton
+	undo_button.text = tr("Undo")
+	var redo_button = $RedoButton
+	redo_button.text = tr("Redo")
+	var autosave_button = $AutosaveButton
+	autosave_button.text = tr("Load Autosave")
+	var autosave_close_button = $AutosaveCloseButton
+	autosave_close_button.text = tr("Close")
+	var autosave_label = $AutosaveLabel
+	autosave_label.text = tr("Autosave detected. Would you like to load it?")
+	var level_complete_label = $LevelCompleteLabel
+	level_complete_label.text = tr("Level Complete!")
+	var italian_button = $ItalianButton
+	italian_button.text = tr("Italian")
+	var spanish_button = $SpanishButton
+	spanish_button.text = tr("Spanish")
+	var french_button = $FrenchButton
+	french_button.text = tr("French")
+	var english_button = $EnglishButton
+	english_button.text = tr("English")
+	print("Language changed to: ", language_code)

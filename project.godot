@@ -15,6 +15,15 @@ run/main_scene="res://Main.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+
+[dotnet]
+
+project/assembly_name="CMPM121"
+
 [input]
 
 ui_left={
@@ -90,6 +99,11 @@ right={
 ]
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://localizations/translations.en.translation", "res://localizations/translations.es.translation", "res://localizations/translations.fr.translation", "res://localizations/translations.it.translation")
+
 [rendering]
 
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true
