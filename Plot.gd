@@ -1,5 +1,6 @@
 extends Node2D
 class_name Plot
+
 @export var sun_level: float = 0.0  # Current sun energy level in the plot
 @export var water_level: float = 10.0  # Current water level in the plot
 var sun_level_range = Vector2(5, 10)  # Default sun level range, will be overwritten
@@ -42,7 +43,8 @@ func update_plot(plot):
 	
 	# Update the plant in the plot, if any
 	if plot.has_plant():
-		plot.plant.update_plant(plot.plant, plot)
+		print(plot.plant.type)
+		plot.plant.grow(plot)
 
 # Static method to create the grid
 static func create_grid(grid_size: int, cell_size: int, parent: Node2D, sun_range: Dictionary, water_range: Dictionary) -> Array:
@@ -176,9 +178,9 @@ static func encode_grid(grid: Array, parent_node: Node2D) -> PackedByteArray:
 				byte_array.append(plot.plant.growth_level)  # Append growth level (integer)
 				
 				# Encode sun and water requirements as floats
-				floatByteArray.encode_float(0, plot.plant.sun_req)
+				#floatByteArray.encode_float(0, plot.plant.sun_req)
 				byte_array.append_array(floatByteArray)
-				floatByteArray.encode_float(0, plot.plant.water_req)
+				#floatByteArray.encode_float(0, plot.plant.water_req)
 				byte_array.append_array(floatByteArray)
 				byte_array.append(get_plant_type_flag(plot.plant))  # Append plant type flag (integer)
 			else:
@@ -242,6 +244,7 @@ static func decode_grid(byte_array: PackedByteArray, parent_node: Node2D, sun_ra
 
 				# Instantiate the appropriate plant type based on the flag
 				var plant: Node2D
+				print("Flag: ", plant_type_flag)
 				if plant_type_flag & 1:  # Lettuce
 					plant = preload("res://plants/Lettuce.tscn").instantiate()
 				elif plant_type_flag & 2:  # Carrot
@@ -301,13 +304,16 @@ static func bytes_to_int(byte_array: PackedByteArray, offset: int) -> int:
 	return buffer.decode_s32(0)  # Interpret the 4 bytes as an int32
 
 static func get_plant_type_flag(plant: Plant) -> int:
-	if plant.is_lettuce:
-		return 1
-	elif plant.is_carrot:
-		return 2
-	elif plant.is_tomato:
-		return 4
-	return 0
+	match plant.type:
+		PlantTypes.PlantType.LETTUCE:
+			return 1
+		PlantTypes.PlantType.CARROT:
+			return 2
+		PlantTypes.PlantType.TOMATO:
+			return 4
+		_:
+			return 0
+
 
 static func set_plant_type_from_flag(plant: Plant, flag: int) -> void:
 	plant.is_lettuce = (flag & 1) != 0
