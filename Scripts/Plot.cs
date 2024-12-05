@@ -96,7 +96,6 @@ public partial class Plot : Node2D
 			}
 			plots.Add(row);
 		}
-
 		return plots;
 	}
 

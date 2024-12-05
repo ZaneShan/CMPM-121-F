@@ -1,6 +1,9 @@
-[gd_scene format=3 uid="uid://cs1kggc4d5bew"]
+[gd_scene load_steps=2 format=3 uid="uid://cs1kggc4d5bew"]
+
+[ext_resource type="Script" path="res://Scripts/Main.cs" id="1_l7b6b"]
 
 [node name="Grid" type="Node2D"]
+script = ExtResource("1_l7b6b")
 
 [node name="TurnButton" type="Button" parent="."]
 offset_left = 215.0
