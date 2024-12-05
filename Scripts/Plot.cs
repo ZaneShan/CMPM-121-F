@@ -20,7 +20,9 @@ public partial class Plot : Node2D
 	private List<List<Plot>> _plotsArray = new();
 
 	// Returns true if there is a plant in the plot
-	public bool HasPlant() => Plant != null;
+	public bool HasPlant() {
+		return (Plant != null);
+	}
 
 	// Sets the plant in the plot
 	public void SetPlant(Plant newPlant)
@@ -54,18 +56,17 @@ public partial class Plot : Node2D
 	// Updates the individual plot
 	public void UpdatePlot(Plot plot)
 	{
-		GD.Print(Coordinates);
 		// Randomize sun and water levels
-		//plot.SunLevel = (float)GD.RandRange(_sunLevelRange.X, _sunLevelRange.Y); // We will use external dsl here
-		//plot.WaterLevel += (float)GD.RandRange(_waterChangeRange.X, _waterChangeRange.Y); // We will use external dsl here
+		plot.SunLevel = (float)GD.RandRange(_sunLevelRange.X, _sunLevelRange.Y); // We will use external dsl here
+		plot.WaterLevel += (float)GD.RandRange(_waterChangeRange.X, _waterChangeRange.Y); // We will use external dsl here
 
 		// Clamp water level to reasonable bounds
 		plot.WaterLevel = Mathf.Clamp(plot.WaterLevel, 0, 20);
 
 		// Update the plant in the plot, if any
-		if (plot.HasPlant() && plot.Plant is Plant plant)
+		if (plot.HasPlant())
 		{
-			plant.Grow();
+			plot.GetPlant().Grow();
 		}
 	}
 
