@@ -9,20 +9,34 @@ const plot_scene = preload("res://Plot.gd")  # Load the Plot script
 var undo_stack = []
 var redo_stack = []
 
+var sun_range = {}  # Default range
+var water_range = {}  # Default range
+
+var parser : ScenarioParser  # Declare a reference to the parser
+
 func _ready():
-	checkAutosave()
-	# Use the static method from Plot to create the grid
-	var cell_size = 64
-	plotsArray = plot_scene.create_grid(grid_size, cell_size, self)
+	# Load the external DSL using the ScenarioParser
+	var scenario_data = ScenarioParser.parse_scenario("res://config.json")
+	print("Parsed scenario data: ", scenario_data)
+
+	# Check if parsing was successful and set the values
+	if scenario_data.size() > 0:
+		grid_size = scenario_data.get("grid_size", 10)
+		sun_range = scenario_data.get("sun_range", {"min": 1, "max": 10})
+		water_range = scenario_data.get("water_range", {"min": 1, "max": 10})
 	
+	# Use the static method from Plot to create the grid
+	print("Sun range: ", sun_range)
+	print("Water range: ", water_range)
+
+	var cell_size = 64
+	plotsArray = plot_scene.create_grid(grid_size, cell_size, self, sun_range, water_range)
 	
 	var level_complete_label = $LevelCompleteLabel
 	level_complete_label.visible = false
 	
-	
 	var viewport_size = get_viewport_rect().size
 	level_complete_label.position = plotsArray[0][0].global_position
-	
 	
 	# Assign the plotsArray to each plot
 	for row in plotsArray:
@@ -74,6 +88,7 @@ func _ready():
 		player.position = plotsArray[0][0].position  # Position matches the top-left plot
 	
 	encode_current_grid() # Save start of the game to undo stack
+
 
 func showAutosavePrompt():
 	var autosaveLabel = $AutosaveLabel
@@ -150,7 +165,7 @@ func loadAutosave():
 	var grid_size = file.get_32()
 	var encoded_data = file.get_buffer(grid_size)
 	plot_scene.clear_grid(self, plotsArray)
-	plotsArray = Plot.decode_grid(encoded_data, self)
+	plotsArray = Plot.decode_grid(encoded_data, self, sun_range, water_range)
 
 	# Load the undo stack
 	undo_stack.clear()
@@ -211,7 +226,7 @@ func load(fileName: String):
 	var grid_size = file.get_32()
 	var encoded_data = file.get_buffer(grid_size)
 	plot_scene.clear_grid(self, plotsArray)
-	plotsArray = Plot.decode_grid(encoded_data, self)
+	plotsArray = Plot.decode_grid(encoded_data, self, sun_range, water_range)
 
 	# Load the undo stack
 	undo_stack.clear()
@@ -244,7 +259,7 @@ func undo():
 		
 		# Decode the grid from the packed byte array
 		plot_scene.clear_grid(self, plotsArray)
-		plotsArray = Plot.decode_grid(last_state, self)
+		plotsArray = Plot.decode_grid(last_state, self, sun_range, water_range)
 		
 		# Push the state to the redo stack for possible redo later
 		redo_stack.append(last_state)
@@ -262,7 +277,7 @@ func redo():
 		
 		# Decode the grid from the packed byte array
 		plot_scene.clear_grid(self, plotsArray)
-		plotsArray = Plot.decode_grid(redo_state, self)
+		plotsArray = Plot.decode_grid(redo_state, self, sun_range, water_range)
 		
 		# Push the state back to the undo stack
 		undo_stack.append(redo_state)

@@ -2,12 +2,13 @@ extends Node2D
 class_name Plot
 @export var sun_level: float = 0.0  # Current sun energy level in the plot
 @export var water_level: float = 10.0  # Current water level in the plot
-var sun_level_range = Vector2(5, 10)  # Random sun level range for each turn
-var water_change_range = Vector2(-2, 2)  # Random water change range for each turn
+var sun_level_range = Vector2(5, 10)  # Default sun level range, will be overwritten
+var water_change_range = Vector2(-2, 2)  # Default water change range, will be overwritten
 
 var plant = null  # Optional plant object (set externally)
 var player = null  # Reference to the player on this plot
 var coordinates = Vector2()
+
 
 # Returns true if there is a plant in the plot
 func has_plant() -> bool:
@@ -34,34 +35,34 @@ func remove_player():
 func update_plot(plot):
 	# Randomize sun and water levels
 	plot.sun_level = randf_range(sun_level_range.x, sun_level_range.y)
-	#print("plot.sun_level: ", plot.sun_level)
 	plot.water_level += randf_range(water_change_range.x, water_change_range.y)
-	#print("plot.water_level: ", plot.water_level)
 	
 	# Clamp water level to reasonable bounds
 	plot.water_level = clamp(plot.water_level, 0, 20)
 	
 	# Update the plant in the plot, if any
 	if plot.has_plant():
-		# Ensure plot.plant is a valid instance of Plant
 		plot.plant.update_plant(plot.plant, plot)
-		#if plot.plant is Plant:
-			#plot.plant.update_plant(plot)
-		#else:
-			#print("No valid plant in the plot!")
-
 
 # Static method to create the grid
-static func create_grid(grid_size: int, cell_size: int, parent: Node2D) -> Array:
+static func create_grid(grid_size: int, cell_size: int, parent: Node2D, sun_range: Dictionary, water_range: Dictionary) -> Array:
 	var plots = []
 	var plot_scene = preload("res://Plot.tscn")
+	if !sun_range.has("min") or !sun_range.has("max"):
+		print("Error: sun_range does not contain 'min' or 'max'")
+	if !water_range.has("min") or !water_range.has("max"):
+		print("Error: water_range does not contain 'min' or 'max'")
+
+
+
+	# Dynamically set the sun and water ranges from the DSL
+	#var sun_level_range = Vector2(sun_range["min"], sun_range["max"])
+	#var water_change_range = Vector2(water_range["min"], water_range["max"])
 	
 	# Get the size of the viewport
-	#var viewport_size = parent.get_viewport_rect().size
 	var grid_width = grid_size * cell_size
 	var grid_height = grid_size * cell_size
 	
-	# Get the size of the viewport
 	var viewport_size = parent.get_viewport_rect().size
 	var start_x = (viewport_size.x - grid_width) / 2
 	var start_y = (viewport_size.y - grid_height) / 2
@@ -77,20 +78,28 @@ static func create_grid(grid_size: int, cell_size: int, parent: Node2D) -> Array
 			row.append(plot)
 		plots.append(row)
 	return plots
-	
-var plots_array = []  # Reference to the parent grid of plots
 
-# Clear grid and delete all nodes, including the player
+# Static function to load the DSL and set up the grid
+static func load_dsl_and_create_grid(dsl: Dictionary, parent: Node2D) -> Array:
+	# Extract sun and water ranges from the DSL
+	var sun_range = dsl["scenario"]["sun_range"]
+	var water_range = dsl["scenario"]["water_range"]
+	
+	# Extract grid size and cell size from the DSL
+	var grid_size = dsl["scenario"]["grid_size"]
+	var cell_size = 64  # You can modify this if needed
+	
+	# Create the grid based on the DSL
+	return create_grid(grid_size, cell_size, parent, sun_range, water_range)
+
+var plots_array = []
+# Static method to clear grid
 static func clear_grid(parent: Node2D, plots_array: Array):
-	# Delete all plot nodes in the grid
 	for row in plots_array:
 		for plot in row:
-			plot.queue_free()  # Queue each plot for deletion
-
-	# Clear the plot array as well
+			plot.queue_free()
 	plots_array.clear()
 
-	# Check if there is a player node and delete it
 	var player_node = parent.get_node("Player") if parent.has_node("Player") else null
 	var player2_node = parent.get_node("Player2") if parent.has_node("Player2") else null
 	
@@ -101,6 +110,7 @@ static func clear_grid(parent: Node2D, plots_array: Array):
 		player2_node.queue_free()  # Delete the "Player2" node
 	
 	print("Grid cleared and player deleted.")
+
 
 # Set the plots array explicitly when creating the grid
 func set_plots_array(new_plots_array):
@@ -176,11 +186,12 @@ static func encode_grid(grid: Array, parent_node: Node2D) -> PackedByteArray:
 
 	return byte_array
 
-static func decode_grid(byte_array: PackedByteArray, parent_node: Node2D) -> Array:
+static func decode_grid(byte_array: PackedByteArray, parent_node: Node2D, sun_range: Dictionary, water_range: Dictionary) -> Array:
 	# Step 1: Read grid size and cell size from byte array
 	var grid_size = byte_array[0]  # The first byte contains the grid size
 	var cell_size = byte_array[1]  # The second byte contains the cell size
-	var grid = create_grid(grid_size, cell_size, parent_node)  # Create the grid using the size and cell size
+	var grid = create_grid(grid_size, cell_size, parent_node, sun_range, water_range)  # Pass sun_range and water_range
+
 
 	# Step 2: Decode the encoded grid data
 	var offset = 2  # Start reading after the grid size and cell size bytes

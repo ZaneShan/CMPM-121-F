@@ -1,0 +1,11 @@
+{
+	"grid_size": 3,
+	"sun_range": {
+		"min": 1,
+		"max": 10
+	},
+	"water_range": {
+		"min": 1,
+		"max": 10
+	}
+}
