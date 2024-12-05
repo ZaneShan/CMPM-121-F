@@ -7,7 +7,7 @@ public partial class Main : Node2D
 	private int gridSize = 3;
 	List<List<Plot>> plotsArray = new List<List<Plot>>();
 	
-	private PackedScene plotScene = GD.Load<PackedScene>("res://Plot.gd");
+	private CSharpScript plotScene = GD.Load<CSharpScript>("res://Scripts/Plot.cs");
 	
 	private List<byte[]> undoStack = new List<byte[]>();
 	private List<byte[]> redoStack = new List<byte[]>();

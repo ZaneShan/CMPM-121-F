@@ -54,9 +54,10 @@ public partial class Plot : Node2D
 	// Updates the individual plot
 	public void UpdatePlot(Plot plot)
 	{
+		GD.Print(Coordinates);
 		// Randomize sun and water levels
-		plot.SunLevel = (float)GD.RandRange(_sunLevelRange.X, _sunLevelRange.Y);
-		plot.WaterLevel += (float)GD.RandRange(_waterChangeRange.X, _waterChangeRange.Y);
+		//plot.SunLevel = (float)GD.RandRange(_sunLevelRange.X, _sunLevelRange.Y); // We will use external dsl here
+		//plot.WaterLevel += (float)GD.RandRange(_waterChangeRange.X, _waterChangeRange.Y); // We will use external dsl here
 
 		// Clamp water level to reasonable bounds
 		plot.WaterLevel = Mathf.Clamp(plot.WaterLevel, 0, 20);
