@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class Main : Node2D
 {
@@ -49,7 +50,9 @@ public partial class Main : Node2D
 
 		// Add the player
 		var player = GD.Load<PackedScene>("res://Player.tscn").Instantiate<Player>();
-		player.Plots = plotsArray;
+		player.Plots = plotsArray
+			.Select(innerList => innerList.Cast<Node>().ToList())
+			.ToList();
 		player.GridSize = gridSize;
 		AddChild(player);
 
@@ -91,7 +94,7 @@ public partial class Main : Node2D
 		{
 			foreach (var plot in row)
 			{
-				plot.UpdatePlot();
+				plot.UpdatePlot(plot);
 			}
 		}
 
@@ -126,18 +129,18 @@ public partial class Main : Node2D
 		file.StoreBuffer(encodedData);
 
 		// Save undo stack
-		file.Store32(undoStack.Count);
+		file.Store32((uint)undoStack.Count);
 		foreach (var state in undoStack)
 		{
-			file.Store32(state.Length);
+			file.Store32((uint)state.Length);
 			file.StoreBuffer(state);
 		}
 
 		// Save redo stack
-		file.Store32(redoStack.Count);
+		file.Store32((uint)redoStack.Count);
 		foreach (var state in redoStack)
 		{
-			file.Store32(state.Length);
+			file.Store32((uint)state.Length);
 			file.StoreBuffer(state);
 		}
 
