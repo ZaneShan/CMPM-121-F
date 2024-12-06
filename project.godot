@@ -14,17 +14,11 @@ config/name="CMPM121"
 run/main_scene="res://Main.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
+"<<<<<<<HEAD[autoload]PlantTypes"="*res://plants/PlantTypeManager.gd"
 
-<<<<<<< HEAD
 [autoload]
 
 PlantTypes="*res://plants/PlantTypeManager.gd"
-=======
-[display]
-
-window/size/viewport_width=1920
-window/size/viewport_height=1080
->>>>>>> 788e0d85aa9ef2cef5b0ef1200e61959c38b6a06
 
 [dotnet]
 
@@ -105,11 +99,6 @@ right={
 ]
 }
 
-[internationalization]
-
-locale/translations=PackedStringArray("res://localizations/translations.en.translation", "res://localizations/translations.es.translation", "res://localizations/translations.fr.translation", "res://localizations/translations.it.translation")
-
 [rendering]
 
 renderer/rendering_method="mobile"
-textures/vram_compression/import_etc2_astc=true
