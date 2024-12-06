@@ -6,70 +6,76 @@
 script = ExtResource("1_dilqc")
 
 [node name="TurnButton" type="Button" parent="."]
-offset_left = 215.0
-offset_right = 301.0
-offset_bottom = 31.0
+offset_left = 827.0
+offset_top = 600.0
+offset_right = 1027.0
+offset_bottom = 700.0
 text = "Next Turn"
 
 [node name="SaveButton" type="Button" parent="."]
-offset_left = 1.0
-offset_top = -1.0
-offset_right = 87.0
-offset_bottom = 30.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 120.0
+offset_bottom = 70.0
 text = "Save"
 
 [node name="SaveButton2" type="Button" parent="."]
-offset_top = 40.0
-offset_right = 86.0
-offset_bottom = 71.0
+offset_left = 20.0
+offset_top = 70.0
+offset_right = 120.0
+offset_bottom = 120.0
 text = "Save 2"
 
 [node name="SaveButton3" type="Button" parent="."]
-offset_top = 88.0
-offset_right = 86.0
-offset_bottom = 119.0
+offset_left = 20.0
+offset_top = 120.0
+offset_right = 120.0
+offset_bottom = 170.0
 text = "Save 3"
 
 [node name="LoadButton" type="Button" parent="."]
-offset_left = 105.0
-offset_right = 191.0
-offset_bottom = 31.0
+offset_left = 270.0
+offset_top = 20.0
+offset_right = 370.0
+offset_bottom = 70.0
 text = "Load"
 
 [node name="LoadButton2" type="Button" parent="."]
-offset_left = 104.0
-offset_top = 41.0
-offset_right = 190.0
-offset_bottom = 72.0
+offset_left = 270.0
+offset_top = 70.0
+offset_right = 370.0
+offset_bottom = 120.0
 text = "Load 2"
 
 [node name="LoadButton3" type="Button" parent="."]
-offset_left = 102.0
-offset_top = 86.0
-offset_right = 188.0
-offset_bottom = 117.0
+offset_left = 270.0
+offset_top = 120.0
+offset_right = 370.0
+offset_bottom = 170.0
 text = "Load 3"
 
 [node name="UndoButton" type="Button" parent="."]
-offset_left = 400.0
-offset_right = 486.0
-offset_bottom = 31.0
+offset_left = 20.0
+offset_top = 200.0
+offset_right = 120.0
+offset_bottom = 250.0
 text = "Undo"
 
 [node name="RedoButton" type="Button" parent="."]
-offset_left = 500.0
-offset_right = 586.0
-offset_bottom = 31.0
+offset_left = 20.0
+offset_top = 250.0
+offset_right = 120.0
+offset_bottom = 300.0
 text = "Redo
 "
 
 [node name="LevelCompleteLabel" type="Label" parent="."]
 top_level = true
 z_index = 1
-offset_left = 507.0
-offset_top = 264.0
-offset_right = 631.0
-offset_bottom = 300.0
+offset_left = 500.0
+offset_top = 500.0
+offset_right = 624.0
+offset_bottom = 575.0
 text = "=============
 Level Complete!
 ============="
@@ -77,25 +83,53 @@ horizontal_alignment = 2
 vertical_alignment = 2
 
 [node name="AutosaveLabel" type="Label" parent="."]
-offset_left = 378.0
-offset_top = 51.0
-offset_right = 816.0
-offset_bottom = 74.0
+offset_left = 520.0
+offset_top = 20.0
+offset_right = 958.0
+offset_bottom = 43.0
 text = "Autosave Detected: Would you like to load the autosave?"
 
 [node name="AutosaveButton" type="Button" parent="."]
-offset_left = 427.0
-offset_top = 86.0
-offset_right = 549.0
-offset_bottom = 117.0
+offset_left = 520.0
+offset_top = 70.0
+offset_right = 670.0
+offset_bottom = 120.0
 text = "Load Autosave"
 
 [node name="AutosaveCloseButton" type="Button" parent="."]
-offset_left = 661.0
-offset_top = 88.0
-offset_right = 711.0
-offset_bottom = 119.0
+offset_left = 820.0
+offset_top = 70.0
+offset_right = 900.0
+offset_bottom = 120.0
 text = "Close"
+
+[node name="ItalianButton" type="Button" parent="."]
+offset_left = 1830.0
+offset_top = 70.0
+offset_right = 1900.0
+offset_bottom = 120.0
+text = "Italian"
+
+[node name="SpanishButton" type="Button" parent="."]
+offset_left = 1830.0
+offset_top = 120.0
+offset_right = 1900.0
+offset_bottom = 170.0
+text = "Spanish"
+
+[node name="FrenchButton" type="Button" parent="."]
+offset_left = 1830.0
+offset_top = 170.0
+offset_right = 1900.0
+offset_bottom = 220.0
+text = "French"
+
+[node name="EnglishButton" type="Button" parent="."]
+offset_left = 1830.0
+offset_top = 20.0
+offset_right = 1900.0
+offset_bottom = 70.0
+text = "English"
 
 [connection signal="pressed" from="TurnButton" to="." method="_on_turn_button_pressed"]
 [connection signal="pressed" from="SaveButton" to="." method="_on_turn_button_pressed"]
