@@ -77,7 +77,7 @@ We haven’t changed the tools for the project, but our use of role titles has b
 
 --- 
 
-# Devlog Entry 4 - 12/6/2024
+# Devlog Entry 3 - 12/2/2024
 
 ## How we satisfied the software requirements
 
@@ -121,7 +121,7 @@ The only mindset change we had coming into this sprint was how we structured our
 
 --- 
 
-# Devlog Entry 3 - 12/2/2024
+# Devlog Entry 4 - 12/6/2024
 
 ## How we satisfied the software requirements
 
