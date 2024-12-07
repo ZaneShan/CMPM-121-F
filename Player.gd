@@ -87,14 +87,29 @@ func plant_seed_on_current_plot(plant_type: PlantType):
 	if parent_node.has_method("encode_current_grid"):
 		parent_node.encode_current_grid()
 
+var harvested_plants: Dictionary = {}
 
 func harvest_plant_on_current_plot():
 	if current_plot:
 		if current_plot.has_plant():
-			if current_plot.plant.is_fully_grown():
-				current_plot.remove_child(current_plot.plant)
+			var plant = current_plot.plant
+			if plant.is_fully_grown():
+				# Remove the plant from the plot
+				current_plot.remove_child(plant)
 				current_plot.remove_plant()
 				print("Plant harvested.")
+
+				# Update the harvested plants dictionary
+				var plant_type = plant.type  # Use the exported `type` property
+				print("plant type in player: ", plant_type)
+				if harvested_plants.has(plant_type):
+					harvested_plants[plant_type] += 1
+				else:
+					harvested_plants[plant_type] = 1
+				var parent_node = get_parent()
+				if parent_node.has_method("check_win_condition"):
+					parent_node.check_win_condition()
+				print("Harvested plants:", harvested_plants)
 			else:
 				print("Plant is not fully grown.")
 		else:

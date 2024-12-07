@@ -3,7 +3,7 @@ class_name Plant
 
 # Plant types (Lettuce, Tomato, Carrot)
 enum PlantType { LETTUCE, TOMATO, CARROT }
-
+ 
 # Growth stages
 enum GrowthStage { STAGE_0, STAGE_1, STAGE_2 }
 

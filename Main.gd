@@ -4,7 +4,7 @@ var grid_size = 3
 var plotsArray = []
 
 const plot_scene = preload("res://Plot.gd")  # Load the Plot script
-
+var player = null
 # Undo and Redo stacks to store encoded grid states
 var undo_stack = []
 var redo_stack = []
@@ -13,6 +13,8 @@ var sun_range = {}  # Default range
 var water_range = {}  # Default range
 
 var parser : ScenarioParser  # Declare a reference to the parser
+
+var roundCount = 0
 
 func _ready():
 	# Load the external DSL using the ScenarioParser
@@ -24,10 +26,15 @@ func _ready():
 		grid_size = scenario_data.get("grid_size", 10)
 		sun_range = scenario_data.get("sun_range", {"min": 1, "max": 10})
 		water_range = scenario_data.get("water_range", {"min": 1, "max": 10})
+		
+			# Load win condition
+		if scenario_data.has("win_condition"):
+			load_win_condition(scenario_data)
+			print("Win condition:", scenario_data["win_condition"])
 	
 	# Use the static method from Plot to create the grid
-	print("Sun range: ", sun_range)
-	print("Water range: ", water_range)
+		print("Sun range: ", sun_range)
+		print("Water range: ", water_range)
 
 	var cell_size = 64
 	plotsArray = plot_scene.create_grid(grid_size, cell_size, self, sun_range, water_range)
@@ -93,7 +100,7 @@ func _ready():
 	change_language("en")
 
 	# Add the player
-	var player = preload("res://Player.tscn").instantiate()
+	player = preload("res://Player.tscn").instantiate()
 	player.plots = plotsArray
 	player.grid_size = grid_size
 	add_child(player)
@@ -123,13 +130,13 @@ func hideAutosavePrompt():
 
 # Turn update button callback
 func _on_turn_complete():
-	
+	roundCount += 1
 	for row in plotsArray:
 		for plot in row:
 			#print("Plot coordinates: ", plot.coordinates, " | Position: ", plot.position, " | Plant: ", plot.plant)
 			plot.update_plot(plot)
 	encode_current_grid()
-	check_level_complete()
+	check_win_condition()
 	autosave()
 	hideAutosavePrompt()
 
@@ -202,7 +209,7 @@ func loadAutosave():
 
 	file.close()
 	print("Grid data and stacks loaded successfully!")
-	check_level_complete()
+	check_win_condition()
 	
 	
 func save(fileName: String):
@@ -263,7 +270,7 @@ func load(fileName: String):
 
 	file.close()
 	print("Grid data and stacks loaded successfully!")
-	check_level_complete()
+	check_win_condition()
 
 	
 # Undo the last action
@@ -278,7 +285,7 @@ func undo():
 		
 		# Push the state to the redo stack for possible redo later
 		redo_stack.append(last_state)
-		check_level_complete()
+		check_win_condition()
 
 		print("Undo: Grid restored to previous state.")
 	else:
@@ -296,7 +303,7 @@ func redo():
 		
 		# Push the state back to the undo stack
 		undo_stack.append(redo_state)
-		check_level_complete()
+		check_win_condition()
 		
 		print("Redo: Grid restored to the next state.")
 	else:
@@ -311,20 +318,80 @@ func encode_current_grid():
 	#print(undo_stack)
 
 # Check if level is complete
-func check_level_complete():
+func count_fully_grown_plants():
 	var grown_plants = 0
 	for row in plotsArray:
 		for plot in row:
 			if plot.has_plant() and plot.get_plant().is_fully_grown():
 				grown_plants += 1
 	var level_complete_label = $LevelCompleteLabel
-	# Check against your win condition
-	if grown_plants >= 5:  # Example win condition
-		print("Level Complete!")
-		
-		level_complete_label.visible = true
-	else:
-		level_complete_label.visible = false
+	return grown_plants
+
+enum WinConditionType { COLLECT_RESOURCES, SURVIVE_ROUNDS, REACH_GROWTH_TARGET }
+
+var win_condition_type: WinConditionType
+var win_condition_goal = {}
+
+func load_win_condition(data):
+	if data.has("win_condition"):
+		var condition = data["win_condition"]
+		match condition["type"]:
+			"collect_resources":
+				win_condition_type = WinConditionType.COLLECT_RESOURCES
+				win_condition_goal = condition["goal"]
+				if win_condition_goal.has("plants"):
+					# Parse plant goals into a dictionary
+					win_condition_goal["plants"] = condition["goal"]["plants"]
+			"survive_rounds":
+				win_condition_type = WinConditionType.SURVIVE_ROUNDS
+				win_condition_goal = condition["rounds"]
+			"reach_growth_target":
+				win_condition_type = WinConditionType.REACH_GROWTH_TARGET
+				win_condition_goal = condition["goal"]
+				if win_condition_goal.has("plants"):
+					# Parse plant goals into a dictionary
+					win_condition_goal["plants"] = condition["goal"]["plants"]
+
+
+func check_win_condition():
+	match win_condition_type:
+		WinConditionType.COLLECT_RESOURCES:
+			print("win condition collect resources")
+			# Check if the player has harvested enough plants
+			if win_condition_goal.has("plants"):
+				print("win condition plant length: ", win_condition_goal["plants"].size())
+				for plant_type_str in win_condition_goal["plants"].keys():
+					# Convert the string keys to integers
+					var plant_type_enum = int(plant_type_str)
+					var required_amount = win_condition_goal["plants"][plant_type_str]
+					
+					# Debug print for plant_type_enum to ensure it matches
+					print("Checking plant type: ", plant_type_enum)  # Ensure this matches the harvested plant type enum
+
+					# Get the harvested amount for the enum value (plant_type_enum)
+					var harvested_amount = player.harvested_plants.get(plant_type_enum, 0)
+					print("required amount: ", required_amount)
+					print("harvested amount: ", harvested_amount)
+
+					if harvested_amount < required_amount:
+						return false
+			level_complete()
+			return true
+		WinConditionType.SURVIVE_ROUNDS:
+			if roundCount >= win_condition_goal:
+				level_complete()
+				return true
+			return false
+		WinConditionType.REACH_GROWTH_TARGET:
+			if count_fully_grown_plants() >= win_condition_goal["plants"]:
+				level_complete()
+				return true
+			return false
+
+func level_complete():
+	print("game won!!!!!!!!!!!!!!!!!!!")
+	var level_complete_label = $LevelCompleteLabel
+	level_complete_label.visible = true
 		
 func change_language(language_code: String):
 	# Set the current locale

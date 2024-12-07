@@ -9,13 +9,9 @@
 		"max": 10
 	},
 	"win_condition": {
-		"type": "collect_resources",
+		"type": "reach_growth_target",
 		"goal": {
-			"plants": {
-				"0": 2,
-				"1": 2,
-				"2": 2
-			}
+			"plants": 5
 		}
 	}
 }

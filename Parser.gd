@@ -23,4 +23,8 @@ static func parse_scenario(file_path: String) -> Dictionary:
 	scenario["sun_range"] = data.get("sun_range", {"min": 1, "max": 10})
 	scenario["water_range"] = data.get("water_range", {"min": 1, "max": 10})
 	
+	# Load the win_condition if it exists in the scenario data
+	if data.has("win_condition"):
+		scenario["win_condition"] = data["win_condition"]
+	
 	return scenario

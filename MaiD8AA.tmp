@@ -1,0 +1,142 @@
+[gd_scene load_steps=2 format=3 uid="uid://cs1kggc4d5bew"]
+
+[ext_resource type="Script" path="res://Main.gd" id="1_dilqc"]
+
+[node name="Grid" type="Node2D"]
+script = ExtResource("1_dilqc")
+
+[node name="TurnButton" type="Button" parent="."]
+offset_left = 827.0
+offset_top = 600.0
+offset_right = 1027.0
+offset_bottom = 700.0
+text = "Next Turn"
+
+[node name="SaveButton" type="Button" parent="."]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 120.0
+offset_bottom = 70.0
+text = "Save"
+
+[node name="SaveButton2" type="Button" parent="."]
+offset_left = 20.0
+offset_top = 70.0
+offset_right = 120.0
+offset_bottom = 120.0
+text = "Save 2"
+
+[node name="SaveButton3" type="Button" parent="."]
+offset_left = 20.0
+offset_top = 120.0
+offset_right = 120.0
+offset_bottom = 170.0
+text = "Save 3"
+
+[node name="LoadButton" type="Button" parent="."]
+offset_left = 270.0
+offset_top = 20.0
+offset_right = 370.0
+offset_bottom = 70.0
+text = "Load"
+
+[node name="LoadButton2" type="Button" parent="."]
+offset_left = 270.0
+offset_top = 70.0
+offset_right = 370.0
+offset_bottom = 120.0
+text = "Load 2"
+
+[node name="LoadButton3" type="Button" parent="."]
+offset_left = 270.0
+offset_top = 120.0
+offset_right = 370.0
+offset_bottom = 170.0
+text = "Load 3"
+
+[node name="UndoButton" type="Button" parent="."]
+offset_left = 20.0
+offset_top = 200.0
+offset_right = 120.0
+offset_bottom = 250.0
+text = "Undo"
+
+[node name="RedoButton" type="Button" parent="."]
+offset_left = 20.0
+offset_top = 250.0
+offset_right = 120.0
+offset_bottom = 300.0
+text = "Redo
+"
+
+[node name="LevelCompleteLabel" type="Label" parent="."]
+top_level = true
+z_index = 1
+offset_left = 500.0
+offset_top = 500.0
+offset_right = 624.0
+offset_bottom = 575.0
+text = "=============
+Level Complete!
+============="
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="AutosaveLabel" type="Label" parent="."]
+offset_left = 520.0
+offset_top = 20.0
+offset_right = 958.0
+offset_bottom = 43.0
+text = "Autosave Detected: Would you like to load the autosave?"
+
+[node name="AutosaveButton" type="Button" parent="."]
+offset_left = 520.0
+offset_top = 70.0
+offset_right = 670.0
+offset_bottom = 120.0
+text = "Load Autosave"
+
+[node name="AutosaveCloseButton" type="Button" parent="."]
+offset_left = 820.0
+offset_top = 70.0
+offset_right = 900.0
+offset_bottom = 120.0
+text = "Close"
+
+[node name="ItalianButton" type="Button" parent="."]
+offset_left = 1830.0
+offset_top = 70.0
+offset_right = 1900.0
+offset_bottom = 120.0
+text = "Italian"
+
+[node name="SpanishButton" type="Button" parent="."]
+offset_left = 1830.0
+offset_top = 120.0
+offset_right = 1900.0
+offset_bottom = 170.0
+text = "Spanish"
+
+[node name="FrenchButton" type="Button" parent="."]
+offset_left = 1830.0
+offset_top = 170.0
+offset_right = 1900.0
+offset_bottom = 220.0
+text = "French"
+
+[node name="EnglishButton" type="Button" parent="."]
+offset_left = 1830.0
+offset_top = 20.0
+offset_right = 1900.0
+offset_bottom = 70.0
+text = "English"
+
+[connection signal="pressed" from="TurnButton" to="." method="_on_turn_button_pressed"]
+[connection signal="pressed" from="SaveButton" to="." method="_on_turn_button_pressed"]
+[connection signal="pressed" from="SaveButton2" to="." method="_on_turn_button_pressed"]
+[connection signal="pressed" from="SaveButton3" to="." method="_on_turn_button_pressed"]
+[connection signal="pressed" from="LoadButton" to="." method="_on_turn_button_pressed"]
+[connection signal="pressed" from="LoadButton2" to="." method="_on_turn_button_pressed"]
+[connection signal="pressed" from="LoadButton3" to="." method="_on_turn_button_pressed"]
+[connection signal="pressed" from="UndoButton" to="." method="_on_turn_button_pressed"]
+[connection signal="pressed" from="RedoButton" to="." method="_on_turn_button_pressed"]
