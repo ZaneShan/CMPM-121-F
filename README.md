@@ -118,3 +118,148 @@ Because we save after every turn, we automatically are able to undo every major 
 ![F1.a data structure diagram](./bytearray.png)
 ## Reflection
 The only mindset change we had coming into this sprint was how we structured our code to better help us in the future. We made sure that functions were really one purpose functions so that debugging was made easier. We did this so that future requirements could be implemented seemlessly and in doing so this made it easier to explain our code.
+
+--- 
+
+# Devlog Entry 4 - 12/6/2024
+
+## How we satisfied the software requirements
+
+### [F0.a] You control a character moving over a 2D grid.
+Same as last week.
+
+### [F0.b] You advance time manually in the turn-based simulation.
+Same as last week.
+
+### [F0.c] You can reap or sow plants on grid cells only when you are near them.
+Same as last week.
+
+### [F0.d] Grid cells have sun and water levels. Each cell's incoming sun and water is somehow randomly generated each turn. Sun energy cannot be stored in a cell (it is used immediately or lost) while water moisture can be slowly accumulated over several turns.
+Same as last week.
+
+### [F0.e] Each plant on the grid has a distinct type (e.g. one of 3 species) and a growth level (e.g. “level 1”, “level 2”, “level 3”).
+Same as last week.
+
+### [F0.f] Simple spatial rules govern plant growth based on sun, water, and nearby plants (satisfying conditions unlock growth).
+Same as last week.
+
+### [F0.g] A play scenario is completed when some condition is satisfied (e.g. at least X plants at growth level Y or above).
+Same as last week.
+
+### [F1.a] The important state of your game's grid must be backed by a single contiguous byte array in AoS or SoA format. If your game stores the grid state in multiple format, the byte array format must be the primary format (i.e. other formats are decoded from it as needed).
+Same as last week.
+
+### [F1.b] The player must be able to manually save their progress in the game. This must allow them to load state and continue play another day (i.e. after quitting the game app). The player must be able to manage multiple save files/slots.
+Same as last week.
+
+### [F1.c] The game must implement an implicit auto-save system to support recovery from unexpected quits. (For example, when the game is launched, if an auto-save entry is present, the game might ask the player "do you want to continue where you left off?" The auto-save entry might or might not be visible among the list of manual save entries available for the player to load as part of F1.b.)
+Same as last week.
+
+### [F1.d] The player must be able to undo every major choice (all the way back to the start of play), even from a saved game. They should be able to redo (undo of undo operations) multiple times.
+Same as last week.
+
+### [F2.a] External DSL for scenario designs: In separate text file or text block, designers should be able to express the design of different gameplay scenarios, e.g. starting conditions, weather randomization policy, and victory conditions. The language must be able to schedule unique events that happen at specific times. (Think about how you could define a level progression by putting the details specific to each level in a separate text file or one big file describing the progression as a sequence.)
+We used an external DSL in order to organize level conditions in our game. The following is how we use our DSL:
+We chose to use JSON as our file type of choice. The following is an example json file with level conditions: 
+```
+{
+	"grid_size": 3,
+	"sun_range": {
+		"min": 1,
+		"max": 10
+	},
+	"water_range": {
+		"min": 1,
+		"max": 10
+	},
+	"win_condition": {
+		"type": "collect_resources",
+		"goal": {
+			"plants": {
+				"0": 2,
+				"1": 2,
+				"2": 2
+			}
+		}
+	},
+	"events": [
+		{
+			"type": "drought",
+			"round": 2,
+			"sun_change": 2,
+			"water_change": 0.5,
+			"duration": 3
+		},
+		{
+			"type": "flood",
+			"round": 4,
+			"sun_change": 0.5,
+			"water_change": 2,
+			"duration": 3
+		}
+	]
+}
+
+```
+We can then parse this data using the following function in GodotScript:
+```
+var scenario_data = ScenarioParser.parse_scenario("res://config.json")
+```
+We can then set values according to the external DSL:
+```
+grid_size = scenario_data.get("grid_size")
+sun_range = scenario_data.get("sun_range")
+water_range = scenario_data.get("water_range")
+
+if scenario_data.has("win_condition"):
+			load_win_condition(scenario_data)
+
+if scenario_data.has("events"):
+			events = scenario_data["events"]
+```
+These allow the player to choose between 3 different win conditions and 2 different events.
+```
+The win conditions are collecting x amount of y plant types, playing x amount of rounds, and having x amount of plants grown at one time, where x and y are variables edited in the external DSL.
+```
+The events are a drought and a flood which have variables to set the intensitity of affect on the sun and water levels, as well as the round the event starts and the duration of the event.
+```
+### [F2.b] Internal DSL for plant types and growth conditions: Within the main programming language used for the rest of your game, you should implement and use a domain-specific language for defining your different types of plants and the unique growth rules that apply to each
+We used an internal DSL in order to organize the plant growth behaviors within our game. The following is how to use our DSL in GodotScript: 
+In our Plant Class we initalize an enum for different plant types, you can add any number of plant types to this enum: 
+```
+enum PlantType { LETTUCE, TOMATO, CARROT }
+```
+We then define a base class for growth rules so individual plant rules can inherit:
+```
+# Base class for growth rules
+class GrowthRule:
+	func can_grow(plant, plot) -> bool:
+		return false
+
+```
+We then can define a specific rule for a specific plant type:
+```
+# Specific growth rules for each plant type
+class LettuceGrowthRule extends GrowthRule:
+	func can_grow(plant, plot) -> bool:
+		return plot.get_adjacent_plots().any(
+			func(adjacent) -> bool:
+				return adjacent.has_plant() and adjacent.get_plant().type == PlantType.LETTUCE
+		)
+```
+We then have to assign the growth rule to our plant based on its specific type:
+```
+PlantType.LETTUCE: LettuceGrowthRule.new(),
+PlantType.TOMATO: TomatoGrowthRule.new(),
+PlantType.CARROT: CarrotGrowthRule.new()
+```
+Then we can simply call a generic function as such to trigger the specific behavior:
+```
+plant.grow(plot)
+```
+### [F2.c] Switch to an alternate platform: Change either your project's primary programming language or your primary user interface library/engine/framework. As more of your design is expressed in DSLs, your design becomes increasingly insulated from changes to your primarily programming language or engine. Using your earlier implementation as a reference, it becomes more realistic that you'd be able to leverage generative AI for the large but mostly mindless translations from one language or engine to another.
+Our intial idea was to move from godotScript to C#. We attempted this and got some of our features to work but a lot of our other ones most specifically the continuous byte array was causing us the most hardship. We decided to scrap the idea of changing languages and instead just focus on the rest of the requirements.
+
+## Reflection
+We realized that it would be hard to switch languages in the time frame we had. We focused more on the structure of our game rather than changing it to a better platform. This made us think that maybe our previous code architecture was not well suited for such a big change. This made us appreciate the idea of DSL's and that if we had better thought
+about our architecture switching languages would have been a lot easier.
