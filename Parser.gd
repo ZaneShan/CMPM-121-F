@@ -27,4 +27,17 @@ static func parse_scenario(file_path: String) -> Dictionary:
 	if data.has("win_condition"):
 		scenario["win_condition"] = data["win_condition"]
 	
+	# Parse the events array if it exists
+	if data.has("events"):
+		var events = []
+		for event_data in data["events"]:
+			var event = {}
+			event["type"] = event_data.get("type", "")
+			event["round"] = event_data.get("round", 0)
+			event["sun_change"] = event_data.get("sun_change", 0)
+			event["water_change"] = event_data.get("water_change", 0)
+			event["duration"] = event_data.get("duration", 0)  # Add duration field
+			events.append(event)
+		scenario["events"] = events
+	
 	return scenario

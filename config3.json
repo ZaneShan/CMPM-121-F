@@ -13,5 +13,21 @@
 		"goal": {
 			"plants": 5
 		}
-	}
+	},
+	"events": [
+		{
+			"type": "drought",
+			"round": 3,
+			"sun_change": 3,
+			"water_change": 0.5,
+			"duration": 3
+		},
+		{
+			"type": "flood",
+			"round": 6,
+			"sun_change": 0.6,
+			"water_change": 5,
+			"duration": 2
+		}
+	]
 }

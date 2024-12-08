@@ -15,10 +15,14 @@ var water_range = {}  # Default range
 var parser : ScenarioParser  # Declare a reference to the parser
 
 var roundCount = 0
+# Event data: drought and flood
+var events = []
+var active_events = []  # List to track active events and their durations
 
+var scenario_data = null
 func _ready():
 	# Load the external DSL using the ScenarioParser
-	var scenario_data = ScenarioParser.parse_scenario("res://config.json")
+	scenario_data = ScenarioParser.parse_scenario("res://config.json")
 	print("Parsed scenario data: ", scenario_data)
 
 	# Check if parsing was successful and set the values
@@ -30,11 +34,15 @@ func _ready():
 			# Load win condition
 		if scenario_data.has("win_condition"):
 			load_win_condition(scenario_data)
-			print("Win condition:", scenario_data["win_condition"])
+			
+		# Parse events (e.g., drought, flood) from scenario_data
+		if scenario_data.has("events"):
+			events = scenario_data["events"]
+			#print("Events:", events)
 	
 	# Use the static method from Plot to create the grid
-		print("Sun range: ", sun_range)
-		print("Water range: ", water_range)
+		#print("Sun range: ", sun_range)
+		#print("Water range: ", water_range)
 
 	var cell_size = 64
 	plotsArray = plot_scene.create_grid(grid_size, cell_size, self, sun_range, water_range)
@@ -131,16 +139,101 @@ func hideAutosavePrompt():
 # Turn update button callback
 func _on_turn_complete():
 	roundCount += 1
+	# Check for events to trigger changes in sun and water range
+	apply_events_for_round(roundCount)
+	check_active_events(roundCount)
+	
 	for row in plotsArray:
 		for plot in row:
 			#print("Plot coordinates: ", plot.coordinates, " | Position: ", plot.position, " | Plant: ", plot.plant)
 			plot.update_plot(plot)
+			print("current plot sun level: ", plot.sun_level)
+			print("current plot water level: ", plot.water_level)
 	encode_current_grid()
 	check_win_condition()
 	autosave()
 	hideAutosavePrompt()
 
+# Event application function
+func apply_events_for_round(round_num: int):
+	for event in events:
+		if event.has("round") and event["round"] == round_num:
+			#print("Applying event:", event["type"])
+			match event["type"]:
+				"drought":
+					apply_drought(event)
+				"flood":
+					apply_flood(event)
+
+
+# Apply drought event
+func apply_drought(event):
+	if event.has("sun_change"):
+		sun_range["min"] *= event["sun_change"]
+		sun_range["max"] *= event["sun_change"]
+		print("Drought applied: Sun range changed to", sun_range)
+
+	if event.has("water_change"):
+		water_range["min"] *= event["water_change"]
+		water_range["max"] *= event["water_change"]
+		print("Drought applied: Water range changed to", water_range)
 	
+	# Store event with duration in active_events
+	active_events.append({
+		"type": "drought",
+		"duration": event.get("duration", 3),  # Default duration is 3 rounds
+		"start_round": roundCount
+	})
+
+# Apply flood event
+func apply_flood(event):
+	if event.has("sun_change"):
+		sun_range["min"] *= event["sun_change"]
+		sun_range["max"] *= event["sun_change"]
+		print("Flood applied: Sun range changed to", sun_range)
+
+	if event.has("water_change"):
+		water_range["min"] *= event["water_change"]
+		water_range["max"] *= event["water_change"]
+		print("Flood applied: Water range changed to", water_range)
+		
+	# Store event with duration in active_events
+	active_events.append({
+		"type": "flood",
+		"duration": event.get("duration", 3),  # Default duration is 3 rounds
+		"start_round": roundCount
+	})
+	
+# Check if any active events have expired and reset values
+func check_active_events(round_num: int):
+	for event in active_events:
+		if round_num - event["start_round"] >= event["duration"]:
+			# Reset the sun and water values after the event duration
+			if event["type"] == "drought":
+				reset_drought()
+			elif event["type"] == "flood":
+				reset_flood()
+
+			# Remove event from active_events after it expires
+			active_events.erase(event)
+
+
+# Reset drought (restore original values)
+func reset_drought():
+	# Reset sun and water ranges to normal values
+	sun_range = {"min": 1, "max": 10}
+	water_range = {"min": 1, "max": 10}
+	print("Drought ended: Sun and water ranges reset to normal")
+
+
+# Reset flood (restore original values)
+func reset_flood():
+	# Reset sun and water ranges to normal values
+	sun_range = scenario_data.get("sun_range", {"min": 1, "max": 10})
+	water_range = scenario_data.get("water_range", {"min": 1, "max": 10})
+	print("Flood ended: Sun and water ranges reset to normal")
+
+
 func checkAutosave():
 	var file = FileAccess.open("user://grid_autosave.dat", FileAccess.READ)
 	if file == null:
@@ -174,7 +267,7 @@ func autosave():
 		file.store_buffer(state)
 
 	file.close()
-	print("Grid data and stacks saved successfully!")
+	#print("Grid data and stacks saved successfully!")
 
 func loadAutosave():
 	hideAutosavePrompt()
@@ -208,7 +301,7 @@ func loadAutosave():
 		redo_stack.append(state)
 
 	file.close()
-	print("Grid data and stacks loaded successfully!")
+	#print("Grid data and stacks loaded successfully!")
 	check_win_condition()
 	
 	
@@ -236,7 +329,7 @@ func save(fileName: String):
 		file.store_buffer(state)
 
 	file.close()
-	print("Grid data and stacks saved successfully!")
+	#print("Grid data and stacks saved successfully!")
 
 func load(fileName: String):
 	var file = FileAccess.open("user://grid_" + fileName + ".dat", FileAccess.READ)
@@ -269,12 +362,13 @@ func load(fileName: String):
 		redo_stack.append(state)
 
 	file.close()
-	print("Grid data and stacks loaded successfully!")
+	#print("Grid data and stacks loaded successfully!")
 	check_win_condition()
 
 	
 # Undo the last action
 func undo():
+	roundCount -= 1
 	if undo_stack.size() > 0:
 		# Pop the most recent state from the undo stack
 		var last_state = undo_stack.pop_back()
@@ -293,6 +387,7 @@ func undo():
 		
 # Redo the last undone action
 func redo():
+	roundCount += 1
 	if redo_stack.size() > 0:
 		# Pop the most recent state from the redo stack
 		var redo_state = redo_stack.pop_back()
@@ -314,7 +409,7 @@ func encode_current_grid():
 	var encoded_data = Plot.encode_grid(plotsArray, self)
 	undo_stack.append(encoded_data)
 	redo_stack.clear()  # Clear redo stack when new action happens
-	print("Current grid state encoded and pushed to undo stack")
+	#print("Current grid state encoded and pushed to undo stack")
 	#print(undo_stack)
 
 # Check if level is complete
@@ -356,22 +451,15 @@ func load_win_condition(data):
 func check_win_condition():
 	match win_condition_type:
 		WinConditionType.COLLECT_RESOURCES:
-			print("win condition collect resources")
 			# Check if the player has harvested enough plants
 			if win_condition_goal.has("plants"):
-				print("win condition plant length: ", win_condition_goal["plants"].size())
 				for plant_type_str in win_condition_goal["plants"].keys():
 					# Convert the string keys to integers
 					var plant_type_enum = int(plant_type_str)
 					var required_amount = win_condition_goal["plants"][plant_type_str]
-					
-					# Debug print for plant_type_enum to ensure it matches
-					print("Checking plant type: ", plant_type_enum)  # Ensure this matches the harvested plant type enum
 
 					# Get the harvested amount for the enum value (plant_type_enum)
 					var harvested_amount = player.harvested_plants.get(plant_type_enum, 0)
-					print("required amount: ", required_amount)
-					print("harvested amount: ", harvested_amount)
 
 					if harvested_amount < required_amount:
 						return false

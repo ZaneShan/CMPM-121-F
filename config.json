@@ -17,5 +17,21 @@
 				"2": 2
 			}
 		}
-	}
+	},
+	"events": [
+		{
+			"type": "drought",
+			"round": 2,
+			"sun_change": 2,
+			"water_change": 0.5,
+			"duration": 3
+		},
+		{
+			"type": "flood",
+			"round": 4,
+			"sun_change": 0.5,
+			"water_change": 2,
+			"duration": 3
+		}
+	]
 }

@@ -11,5 +11,21 @@
 	"win_condition": {
 		"type": "survive_rounds",
 		"rounds": 5
-	}
+	},
+	"events": [
+		{
+			"type": "drought",
+			"round": 5,
+			"sun_change": 3,
+			"water_change": 0.2,
+			"duration": 2
+		},
+		{
+			"type": "flood",
+			"round": 10,
+			"sun_change": 0.2,
+			"water_change": 3,
+			"duration": 5
+		}
+	]
 }
