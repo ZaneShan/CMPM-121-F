@@ -220,9 +220,10 @@ if scenario_data.has("events"):
 These allow the player to choose between 3 different win conditions and 2 different events.
 ```
 The win conditions are collecting x amount of y plant types, playing x amount of rounds, and having x amount of plants grown at one time, where x and y are variables edited in the external DSL.
-```
+
 The events are a drought and a flood which have variables to set the intensitity of affect on the sun and water levels, as well as the round the event starts and the duration of the event.
 ```
+
 ### [F2.b] Internal DSL for plant types and growth conditions: Within the main programming language used for the rest of your game, you should implement and use a domain-specific language for defining your different types of plants and the unique growth rules that apply to each
 We used an internal DSL in order to organize the plant growth behaviors within our game. The following is how to use our DSL in GodotScript: 
 In our Plant Class we initalize an enum for different plant types, you can add any number of plant types to this enum: 
