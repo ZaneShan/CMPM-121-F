@@ -22,7 +22,7 @@ var active_events = []  # List to track active events and their durations
 var scenario_data = null
 func _ready():
 	# Load the external DSL using the ScenarioParser
-	scenario_data = ScenarioParser.parse_scenario("res://config.json")
+	scenario_data = ScenarioParser.parse_scenario("res://config3.json")
 	print("Parsed scenario data: ", scenario_data)
 
 	# Check if parsing was successful and set the values
