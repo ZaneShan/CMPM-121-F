@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://dv5jrmde4njar" path="res://Sprites/Tomato2-Alpha-Testing.svg" id="2_lkj26"]
 [ext_resource type="Texture2D" uid="uid://b5d0njt168bqa" path="res://Sprites/Tomato3-Alpha-Testing.svg" id="3_axi2w"]
 
-[node name="Plant" instance=ExtResource("1_unjtv")]
+[node name="Plant2" instance=ExtResource("1_unjtv")]
 type = 1
 
 [node name="plant_stage_1" parent="." index="0"]

@@ -70,6 +70,7 @@ text = "Redo
 "
 
 [node name="LevelCompleteLabel" type="Label" parent="."]
+visible = false
 top_level = true
 z_index = 1
 offset_left = 500.0
@@ -130,6 +131,12 @@ offset_top = 20.0
 offset_right = 1900.0
 offset_bottom = 70.0
 text = "English"
+
+[node name="WinConditionLabel" type="Label" parent="."]
+offset_left = 835.0
+offset_top = 151.0
+offset_right = 883.0
+offset_bottom = 174.0
 
 [connection signal="pressed" from="TurnButton" to="." method="_on_turn_button_pressed"]
 [connection signal="pressed" from="SaveButton" to="." method="_on_turn_button_pressed"]

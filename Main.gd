@@ -428,24 +428,40 @@ var win_condition_type: WinConditionType
 var win_condition_goal = {}
 
 func load_win_condition(data):
+	var winConditionLabel = $WinConditionLabel
 	if data.has("win_condition"):
 		var condition = data["win_condition"]
+		var win_condition_name = ""
+		var win_condition_goal_str = ""
 		match condition["type"]:
 			"collect_resources":
+				win_condition_name = "Collect Resources"
 				win_condition_type = WinConditionType.COLLECT_RESOURCES
 				win_condition_goal = condition["goal"]
+				win_condition_goal_str = condition["goal"]
 				if win_condition_goal.has("plants"):
 					# Parse plant goals into a dictionary
 					win_condition_goal["plants"] = condition["goal"]["plants"]
+					var plants_needed = win_condition_goal["plants"]
+					var plant_details = ""
+					for plant_name in plants_needed.keys():
+						plant_details += plant_name + ": " + str(plants_needed[plant_name]) + " " + "\n"
+					winConditionLabel.text = "Win Condition: " + win_condition_name + "\n" + plant_details
+					
 			"survive_rounds":
 				win_condition_type = WinConditionType.SURVIVE_ROUNDS
 				win_condition_goal = condition["rounds"]
+				win_condition_name = "Play Rounds"
+				winConditionLabel.text = "Win Condition: " + win_condition_name + "\nRounds to Play: " + str(win_condition_goal)
 			"reach_growth_target":
 				win_condition_type = WinConditionType.REACH_GROWTH_TARGET
 				win_condition_goal = condition["goal"]
+				win_condition_name = "Grow Crops"
 				if win_condition_goal.has("plants"):
 					# Parse plant goals into a dictionary
 					win_condition_goal["plants"] = condition["goal"]["plants"]
+					var plants_needed = str(win_condition_goal["plants"])
+					winConditionLabel.text = "Win Condition: \n" + win_condition_name + ": "+ plants_needed
 
 
 func check_win_condition():
