@@ -536,4 +536,12 @@ func change_language(language_code: String):
 	french_button.text = tr("French")
 	var english_button = $EnglishButton
 	english_button.text = tr("English")
+	var carrot_button = $PlantCarrotButton
+	carrot_button.text = tr("Plant Carrot")
+	var lettuce_button = $PlantLettuceButton
+	lettuce_button.text = tr("Plant Lettuce")
+	var tomato_button = $PlantTomatoButton
+	tomato_button.text = tr("Plant Tomato")
+	var harvest_button = $HarvestButton
+	harvest_button.text = tr("Harvest")
 	print("Language changed to: ", language_code)

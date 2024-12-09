@@ -20,6 +20,12 @@ config/icon="res://icon.svg"
 
 PlantTypes="*res://plants/PlantTypeManager.gd"
 
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/mode=3
+
 [dotnet]
 
 project/assembly_name="CMPM121"
@@ -99,6 +105,11 @@ right={
 ]
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://localizations/translations.en.translation", "res://localizations/translations.es.translation", "res://localizations/translations.fr.translation", "res://localizations/translations.it.translation")
+
 [rendering]
 
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true

@@ -14,6 +14,25 @@ func _ready():
 	target_position = current_plot.position
 	global_position = target_position
 	current_plot.set_player(self)
+	
+	# onscreen inputs
+	var up_button = get_parent().get_node("Up")
+	up_button.connect("pressed", Callable(self, "move").bind(Vector2(0, -1)))
+	var down_button = get_parent().get_node("Down")
+	down_button.connect("pressed", Callable(self, "move").bind(Vector2(0, 1)))
+	var left_button = get_parent().get_node("Left")
+	left_button.connect("pressed", Callable(self, "move").bind(Vector2(-1, 0)))
+	var right_button = get_parent().get_node("Right")
+	right_button.connect("pressed", Callable(self, "move").bind(Vector2(1, 0)))
+	
+	var plant_carrot = get_parent().get_node("PlantCarrotButton")
+	plant_carrot.connect("pressed", Callable(self, "plant_seed_on_current_plot").bind(PlantType.CARROT))
+	var plant_lettuce = get_parent().get_node("PlantLettuceButton")
+	plant_lettuce.connect("pressed", Callable(self, "plant_seed_on_current_plot").bind(PlantType.LETTUCE))
+	var plant_tomato = get_parent().get_node("PlantTomatoButton")
+	plant_tomato.connect("pressed", Callable(self, "plant_seed_on_current_plot").bind(PlantType.TOMATO))
+	var harvest = get_parent().get_node("HarvestButton")
+	harvest.connect("pressed", Callable(self, "harvest_plant_on_current_plot"))
 
 func _physics_process(delta):
 	position = position.move_toward(target_position, cell_size * 5 * delta)

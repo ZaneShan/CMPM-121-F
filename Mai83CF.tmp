@@ -7,10 +7,8 @@ script = ExtResource("1_dilqc")
 
 [node name="TurnButton" type="Button" parent="."]
 offset_left = 827.0
-offset_top = 600.0
 offset_top = 620.0
 offset_right = 1027.0
-offset_bottom = 700.0
 offset_bottom = 720.0
 text = "Next Turn"
 
@@ -72,7 +70,6 @@ text = "Redo
 "
 
 [node name="LevelCompleteLabel" type="Label" parent="."]
-visible = false
 top_level = true
 z_index = 1
 offset_left = 500.0
@@ -134,11 +131,6 @@ offset_right = 1900.0
 offset_bottom = 70.0
 text = "English"
 
-[node name="WinConditionLabel" type="Label" parent="."]
-offset_left = 835.0
-offset_top = 151.0
-offset_right = 883.0
-offset_bottom = 174.0
 [node name="Up" type="Button" parent="."]
 offset_left = 220.0
 offset_top = 650.0
@@ -167,31 +159,31 @@ offset_right = 620.0
 offset_bottom = 1050.0
 text = "→"
 
-[node name="PlantCarrotButton" type="Button" parent="."]
-offset_left = 1700.0
-offset_top = 450.0
-offset_right = 1900.0
-offset_bottom = 650.0
+[node name="PlantCarrot" type="Button" parent="."]
+offset_left = 220.0
+offset_top = 650.0
+offset_right = 420.0
+offset_bottom = 850.0
 text = "↑"
 
-[node name="PlantLettuceButton" type="Button" parent="."]
-offset_left = 1700.0
-offset_top = 650.0
-offset_right = 1900.0
-offset_bottom = 850.0
+[node name="PlantLettuce" type="Button" parent="."]
+offset_left = 220.0
+offset_top = 850.0
+offset_right = 420.0
+offset_bottom = 1050.0
 text = "↓"
 
-[node name="PlantTomatoButton" type="Button" parent="."]
-offset_left = 1700.0
+[node name="PlantTomato" type="Button" parent="."]
+offset_left = 20.0
 offset_top = 850.0
-offset_right = 1900.0
+offset_right = 220.0
 offset_bottom = 1050.0
 text = "←"
 
-[node name="HarvestButton" type="Button" parent="."]
-offset_left = 1500.0
+[node name="Harvest" type="Button" parent="."]
+offset_left = 420.0
 offset_top = 850.0
-offset_right = 1700.0
+offset_right = 620.0
 offset_bottom = 1050.0
 text = "→"
 
@@ -208,7 +200,7 @@ text = "→"
 [connection signal="pressed" from="Down" to="." method="_on_turn_button_pressed"]
 [connection signal="pressed" from="Left" to="." method="_on_turn_button_pressed"]
 [connection signal="pressed" from="Right" to="." method="_on_turn_button_pressed"]
-[connection signal="pressed" from="PlantCarrotButton" to="." method="_on_turn_button_pressed"]
-[connection signal="pressed" from="PlantLettuceButton" to="." method="_on_turn_button_pressed"]
-[connection signal="pressed" from="PlantTomatoButton" to="." method="_on_turn_button_pressed"]
-[connection signal="pressed" from="HarvestButton" to="." method="_on_turn_button_pressed"]
+[connection signal="pressed" from="PlantCarrot" to="." method="_on_turn_button_pressed"]
+[connection signal="pressed" from="PlantLettuce" to="." method="_on_turn_button_pressed"]
+[connection signal="pressed" from="PlantTomato" to="." method="_on_turn_button_pressed"]
+[connection signal="pressed" from="Harvest" to="." method="_on_turn_button_pressed"]
