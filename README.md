@@ -229,7 +229,7 @@ We realized that it would be hard to switch languages in the time frame we had. 
 about our architecture switching languages would have been a lot easier.
 --- 
 
-# Devlog Entry 5 - 12/6/2024
+# Devlog Entry 5 - 12/8/2024
 
 ## How we satisfied the software requirements
 
@@ -287,33 +287,29 @@ After importing this into godot and setting it as the localization file in proje
 	italian_button.text = tr("Italian")
 ```
 ### [F3.b] The game must be localized to support three different written languages. At least one language must use a logographicLinks to an external site. script, and at least one language must use a right-to-leftLinks to an external site. script.
-	The three languages we chose to localize in were French, Spanish, and Italian. 
+The three languages we chose to localize in were French, Spanish, and Italian. 
 
 ### [F3.c] The game must be installable on a smartphone-class mobile device in the sense that there is a way to get it to show up as a home-screen icon that feels similar to other installed apps. (It is okay if you only get this to work on one specific device. You do not need to deploy the game in a way that anyone else can install it without your help because that might be much more difficult for some game platforms.)
-	The game is installable on android through a .APK file. It shows up as an app once installed onto the phone.
+The game is installable on android through a .APK file. It shows up as an app once installed onto the phone.
 
 ### [F3.d] Once installed in a mobile device, the game can be launched and satisfactorily played even when the device is not connected to the internet.
-	The game is playable offline, no internet service is required to launch the app and immediately begin playing.
+The game is playable offline, no internet service is required to launch the app and immediately begin playing.
 
 ### Internationalization
-# The devlog should explain how your code has changed to distinguish between strings internal to the program and strings that will be shown to the player (needing localization). If you did something clever with your language's type system so that the compiler helps you catch incomplete translations or other missing messages, brag about that in this section. This section should outline which code or data files need to get changed when adding support for a new language or adding a new translatable message to the game.
 No changes to the code were required for Localization. We had already implemented our code in a way so that the strings in the buttons and labels could be referenced and changed from another area in the code.
 
 ### Localization
-# Tell us about which three languages your game supports. For each language, tell us about how you accomplished that localization. Did a team member use their own knowledge of the language? Did you have a friend, volunteer classmate, or paid expert help? Did you make use of a tool like ChatGPT to help? (If so, describe your prompts so that we can see how you gave the system extra context for your project. How should the user select which language will be used? Do they change the language setting from inside the game? Did you release three different versions of the game with a different language hard-coded into each? Does the player launch the game with special options (e.g. command line arguments or URL parameters) that encode the choice of language? 
 The three languages we supported are French, Spanish, and Italian. For each, we used ChatGPT in order to translate the words. The prompts we gave were simple, translate this word/phrase in the context of a farming game. There are four buttons on the top right to switch the language, one button for each localization and english to revert it back to normal. 
 
 ### Mobile Installation
-# How did you get your game to be installable on a smartphone-class mobile device? If you followed a tutorial, guide, video, or blogpost, directly link to those resources that helped you learn. What changes were needed to make the game installable?
 Several guides were followed to ensure that the game was playable.
 https://www.youtube.com/watch?v=XqmzmYMhT7g
 We ran into an error where we ccouldnt locate an SDk to facilitate a mobile export, that was solved following this documentation:
 https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_android.html
 
 ### Mobile Play (Offline)
-# What changes to your design were needed to make it play well on a mobile device? Were there any changes needed to make sure it worked in the offline case?
 No changes were required to ensure that the game ran without internet.
 
 ## Reflection
-# Looking back on how you achieved the new F3 requirements, how has your team’s plan changed? Did you reconsider any of the choices you previously described for Tools and Materials or your Roles? Has your game design evolved now that you've started to think about giving the player more feedback? It would be very suspicious if you didn’t need to change anything. There’s learning value in you documenting how your team’s thinking has changed over time.
+Looking back on how you achieved the new F3 requirements, how has your team’s plan changed? Did you reconsider any of the choices you previously described for Tools and Materials or your Roles? Has your game design evolved now that you've started to think about giving the player more feedback? It would be very suspicious if you didn’t need to change anything. There’s learning value in you documenting how your team’s thinking has changed over time.
 Out of all the other requirements, the ones in f3 were by far the easiest. Our implementationin previous areas ensured that changing into mobile would be a painless process, and localizing the game was just a matter of referencing strings and a .csv translation file. 
